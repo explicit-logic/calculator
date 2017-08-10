@@ -399,16 +399,18 @@ Calculator.prototype.buttons=[
 				}
 			} 
 			else if(lastBlock){
-				if(lastBlock.type=='number' && lastBlock.val.length<this.maxLen){
-					if(lastBlock.val==='0'){
-						if(action==0){
-							return;
-						}else{
-							lastBlock.val='';
+				if(lastBlock.type=='number'){
+					if(lastBlock.val.length<this.maxLen){
+						if(lastBlock.val==='0'){
+							if(action==0){
+								return;
+							}else{
+								lastBlock.val='';
+							}
 						}
+						lastBlock.val+=action;
+						this.changeLastNum(lastBlock.val);
 					}
-					lastBlock.val+=action;
-					this.changeLastNum(lastBlock.val);
 				}
 				else{
 					if( lastBlock.val!=')' ){
