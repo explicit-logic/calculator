@@ -51,7 +51,10 @@ function RPN(expression){
 	len=expression.length,i=0,
 	rpn;
 	if(len){
-		if(expression[0].type!='number'){expression.unshift(new Block('number',0));}
+		if(expression[0].type!='number'){
+			expression.unshift(new Block('number',0));
+			len=expression.length;
+		}
 		lastnum=true;
 		for(;i<len;i++){
 			block=expression[i];
@@ -62,8 +65,6 @@ function RPN(expression){
 				}
 				else if(block.val===')'){
 					bracket=false;
-					//problem with brackets!!!!
-					//console.log(stack);
 					while(!bracket && stack){
 						opr=stack.pop();
 						if(opr=='('){
@@ -72,7 +73,6 @@ function RPN(expression){
 						else{
 							out.push(opr);
 						}
-						//alert('br '+bracket);
 					}
 					if(!bracket){
 						console.log('The parenthesis are unbalanced!');
@@ -288,7 +288,9 @@ INPUT.prototype.result=function(){
 		alert('The parenthesis are unbalanced.\n Check your expression again!')
 	}
 	else{
-		var res=''+evaluate( RPN(this.expression) );
+		var rpn,res; 
+		rpn=RPN(this.expression);
+		res=''+evaluate( rpn );
 		this.elem.result.setText( (res.length>3) ? addCommas(res) : res);
 	}
 };
