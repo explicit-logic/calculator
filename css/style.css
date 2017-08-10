@@ -1,0 +1,201 @@
+a {
+  text-decoration: none;
+  color: #DD6C4F;
+}
+
+a:hover {
+  text-decoration:underline;
+}
+
+a:focus { 
+  outline: none;
+}
+
+.button{
+	background-color:"#ddd";
+}
+.wrapper {
+	position: relative;
+	margin: 0 auto;
+	width:800px;
+	height:600px;
+}
+.wrapper-scene{
+	width: 100%;
+	height: 100%;
+}
+.tools.top-panel{
+	position: absolute;
+	left:0px;
+	top:0px;
+	width: 680px;
+    height: 60px;
+    padding: 0px 60px;
+	text-align: center;
+}
+.tools.left-panel{
+	position: absolute;
+	top:0px;
+	left:0px;
+	width: 60px;
+    height: 480px;
+    padding: 60px 0px;
+    line-height: 48px;
+    vertical-align: middle;
+}
+.tools.right-panel{
+	position: absolute;
+	top:0px;
+	right:0px;
+	width: 40px;
+    height: 480px;
+    padding: 60px 10px;
+}
+.tools.bottom-panel{
+	position: absolute;
+	bottom:0px;
+	left:0px;
+	width: 680px;
+    height: 60px;
+    padding: 0px 60px;
+}
+.expression-scene{
+	position: absolute;
+	top:65px;
+	left:65px;
+	display: block;
+	background-color: '#f00';
+	border:solid #ddd 2px;
+  	border-radius: 10px;
+  	height: 467px;
+    width: 667px;
+}
+.wrapper.expression{
+	position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 650px;
+    height: 300px;
+    margin: -150px 0 0 -325px;
+    overflow: hidden;
+}
+#expression{
+	position: absolute;
+  	top: 50%;
+  	left: 0px;
+  	width: 650px;
+  	font-family: Verdana;
+    font-size: 40px;
+    color:#333;
+    text-align: center;
+  	transform: translateY(-50%);
+}
+#expression span{
+	display: inline-block;
+}
+#result{
+	position: absolute;
+    bottom: 25px;
+    left: 30%;
+    width: 65%;
+    height: 35px;
+    font-family: Verdana;
+    font-size: 30px;
+    color: #666;
+    border-top: #2db0e4 1px solid;
+    text-align: center;
+    padding-top: 10px;
+    padding-left: 25px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#result:before{
+	content:'=';
+	position: absolute;
+    left: 0px;
+}
+.vertical.buttons{
+	position: absolute;
+	top:50%;
+	display: inline-block;
+	line-height: 40px;
+	text-align:right;
+	transform: translateY(-50%);
+}
+.horizontal.buttons{
+	display:inline-block;
+}
+.horizontal.buttons-left{
+	display:block;
+	float:left;
+	width:70%;
+}
+.horizontal.buttons-right{
+	display:block;
+	float:right;
+	text-align: right;
+	width:30%;
+}
+.top-panel .horizontal.buttons{
+	margin-top: 13px;
+}
+.button{
+	font-family: Verdana;
+    font-size: 19px;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 40px;   
+	width:40px;
+	height: 40px;
+	margin:3px;
+}
+.button.gray{
+	color: #a7a7a7;
+	background-color: #f7f7f7;
+  	background-image: -webkit-gradient(linear, left top, left bottom, from(#f7f7f7), to(#e7e7e7));
+  	background-image: -webkit-linear-gradient(top, #f7f7f7, #e7e7e7); 
+  	background-image: -moz-linear-gradient(top, #f7f7f7, #e7e7e7); 
+  	background-image: -ms-linear-gradient(top, #f7f7f7, #e7e7e7); 
+  	background-image: -o-linear-gradient(top, #f7f7f7, #e7e7e7); 
+  	box-shadow: 0px 1px 1px #aaa;
+}
+.button.blue{
+	color: #fff;
+	background-color: #49C0F0;
+  	background-image: -webkit-gradient(linear, left top, left bottom, from(#49C0F0), to(#2CAFE3));
+  	background-image: -webkit-linear-gradient(top, #49C0F0, #2CAFE3); 
+  	background-image: -moz-linear-gradient(top, #49C0F0, #2CAFE3); 
+  	background-image: -ms-linear-gradient(top, #49C0F0, #2CAFE3); 
+  	background-image: -o-linear-gradient(top, #49C0F0, #2CAFE3); 
+  	box-shadow: 0px 1px 1px #aaa;
+}
+.button.magenta{
+	color: #fff;
+	background-color: #ff5db1;
+  	background-image: -webkit-gradient(linear, left top, left bottom, from(#ff5db1), to(#ef007c));
+  	background-image: -webkit-linear-gradient(top, #ff5db1, #ef007c); 
+  	background-image: -moz-linear-gradient(top, #ff5db1, #ef007c); 
+  	background-image: -ms-linear-gradient(top, #ff5db1, #ef007c); 
+  	background-image: -o-linear-gradient(top, #ff5db1, #ef007c); 
+  	box-shadow: 0px 1px 1px #aaa;
+}
+.button.round{
+	border-radius: 50%;
+}
+.button.rect{
+	border-radius: 4px;
+}
+.button.blue:hover{
+	text-decoration: none;
+  	background: #1AB0EC;
+}
+.button.magenta:hover{
+	text-decoration: none;
+  	background: #ff2a98;
+}
+.button.gray:hover{
+	text-decoration: none;
+	color: #555;
+  	background: #f5f5f5;
+}
