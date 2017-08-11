@@ -332,6 +332,9 @@ Calculator.prototype.init=function(){
 
 //var rLastPthes=/[\(\)]\s*$/;
 //var rLastNumber=/(\d+)\s*$/;
+function verticalCenter(elem){
+	elem.css('margin-top',(elem.offset().height/2)*-1);
+}
 var rPoint=/\./;
 Calculator.prototype.buttons=[
 	//arithmetic
@@ -339,7 +342,9 @@ Calculator.prototype.buttons=[
 		return panel.left.div({'class':'vertical buttons'}).in;
 	},
 	function(action){
-		return this.container.a({'href':'#','class':'button round gray','text':action}).in;
+		var elem=this.container.a({'href':'#','class':'button round gray','text':action}).in;
+		verticalCenter(this.container);
+		return elem;
 	},
 	function(action){
 		var lastBlock,len;
@@ -357,7 +362,9 @@ Calculator.prototype.buttons=[
 
 	buttons('parenthesis',['(',')'],'arithmetic',
 	function(action){
-		return this.container.a({'href':'#','class':'button round gray','text':action}).in;
+		var elem=this.container.a({'href':'#','class':'button round gray','text':action}).in;
+		verticalCenter(this.container);
+		return elem;
 	},
 	[
 		function(){
@@ -484,7 +491,8 @@ Calculator.prototype.buttons=[
 			return this.container.a({'href':'#','class':'button rect magenta','style':'width:130px','text':action}).in;
 		},
 		function(action){
-			return this.container.a({'href':'#','class':'button rect gray','style':'width:100px','text':action}).in;
+			return this.container.a({'href':'#','class':'button rect gray',
+				'text':String.fromCharCode(8592)}).in;
 		}
 	],
 	[

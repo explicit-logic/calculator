@@ -210,18 +210,15 @@ Tag.fn.offset=function(){
 	};
 	return coords;
 };
+var rPxProp=/(?:size|width|height|left|top|bottom|right)/i;
 function setCSSprop(node,key,val){
-	var propPX=['width','height','left','top'],
-	i=0,len=propPX.length;
-	for(;i<len;i++){
-		if(key==propPX[i]){
-			if(typeof val=="number"){
-				val=val+'px';
-			}
+	var i=0;
+	if(rPxProp.test(key)){
+		if(typeof val=="number"){
+			val=val+'px';
 		}
 	}
 	node.style[key]=val;
-
 }
 Tag.fn.css=function(target){
 	var key, len=arguments.length,i=0,
