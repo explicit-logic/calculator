@@ -166,9 +166,29 @@ var INPUT=function(expression,elem){
 	this.nPthes=0;
 	this.expression=expression;
 	this.elem=elem;
+	this.init();
 };
 INPUT.prototype.maxLen=13;
 
+
+INPUT.prototype.init=function(){
+	var input=this;
+	this.elem.exprsn.click(function(e){
+		var elem=e.target,prevBlock;
+		return;
+		if(elem.className==='number'){
+			index=input.removeBlock(elem);
+			
+			if(index>0){
+				prevBlock=this.expression[index-1];
+				if(prevBlock.val!='('){
+					input.removeById(prevBlock.id);
+				}
+			}
+		}
+		e.preventDefault();
+	});
+};
 INPUT.prototype.openBkt=function(){
 	var lastBlock,len;
 		len=this.expression.length;
@@ -239,11 +259,20 @@ INPUT.prototype.changeLast=function(val){
 	this.expression[this.expression.length-1].val=val;
 	this.elem.exprsn.node.lastChild.textContent=val;
 }
-INPUT.prototype.removeBlock=function(index){
-	var block=this.expression[index];
-	this.beforeRemove(block);
-	this.expression.splice(index,1);
-	this.elem.exprsn.node.removeChild(document.getElementById(block.id));
+INPUT.prototype.removeBlock=function(elem){
+	var block, id=elem.id,
+	index=this.expression.length;
+	for(;--index;){
+		block=this.expression[index];
+		if(block.id==id){
+			this.beforeRemove(block);
+			this.expression.splice(index,1);
+			this.elem.exprsn.node.removeChild(elem);
+
+			return index;
+		}
+
+	}
 };
 INPUT.prototype.removeById=function(id){
 	var block,index;
@@ -355,6 +384,8 @@ Calculator.prototype.buttons=[
 			else{
 				this.addBlock(new Block('sign',action));
 			}
+		}else if(action=='-'){
+			this.addBlock(new Block('sign',action));
 		}
 	}),
 
@@ -376,7 +407,7 @@ Calculator.prototype.buttons=[
 	]),
 
 	//numeric
-	buttons('numeric',['+/-',0,'.',1,2,3,4,5,6,7,8,9],function(panel){
+	buttons('numeric',[0,'.',1,2,3,4,5,6,7,8,9],function(panel){
 		return panel.top.div({'class':'horizontal buttons'}).in;
 	},
 	function(action){
@@ -478,7 +509,7 @@ Calculator.prototype.buttons=[
 			clear(this);
 		};
 
-		return [rsign,num,dot,num,num,num, num,num,num, num,num,num];
+		return [num,dot,num,num,num, num,num,num, num,num,num];
 
 	}()),
 

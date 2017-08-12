@@ -92,6 +92,18 @@ a:focus {
 }
 #expression span{
 	display: inline-block;
+	border-radius: 5px;
+    margin: 1px;
+    padding: 3px;
+}
+#expression span:hover{
+	background-color: #333;
+	color:#fff;
+    cursor: pointer;
+}
+#expression .sign:hover{
+	/*border-radius: 50%;*/
+	background-color: #1AB0EC;
 }
 #result{
 	position: absolute;
@@ -101,7 +113,7 @@ a:focus {
     height: 35px;
     font-family: Verdana;
     font-size: 30px;
-    color: #666;
+    color: #333;
     border-top: #2db0e4 1px solid;
     text-align: center;
     padding-top: 10px;
