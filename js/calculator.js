@@ -198,6 +198,11 @@ INPUT.prototype.openBkt=function(){
 			this.addBlock(new Block('sign','('));
 			this.nPthes++;
 		}
+		else if(lastBlock.type=='number' && lastBlock.val=='-'){
+			this.changeLastType('sign');
+			this.addBlock(new Block('sign','('));
+			this.nPthes++;
+		}
 	}
 	else{
 		this.addBlock(new Block('sign','('));
@@ -244,6 +249,10 @@ INPUT.prototype.removeLast=function(){
 	var block=this.expression.pop();
 	this.beforeRemove(block);
 	this.elem.exprsn.node.removeChild(this.elem.exprsn.node.lastChild);
+};
+INPUT.prototype.changeLastType=function(type){
+	this.expression[this.expression.length-1].type=type;
+	this.elem.exprsn.node.lastChild.className=type;
 };
 INPUT.prototype.changeBlock=function(index, val){
 	var block=this.expression[index],el;
@@ -319,6 +328,7 @@ INPUT.prototype.result=function(){
 	else{
 		var rpn,res; 
 		rpn=RPN(this.expression);
+		console.log(rpn);
 		res=''+evaluate( rpn );
 		this.elem.result.setText( (res.length>3) ? addCommas(res) : res);
 	}
@@ -380,12 +390,18 @@ Calculator.prototype.buttons=[
 		len=this.expression.length;
 		lastBlock=this.expression[len-1];
 		if(lastBlock){
-			if(lastBlock.type=='sign' && lastBlock.val!=')'){return;}
+			if(lastBlock.type=='sign'){
+				if(lastBlock.val==')'  ){
+					this.addBlock(new Block('sign',action));
+				} else if(action=='-' && lastBlock.val=='('){
+					this.addBlock(new Block('number',action));
+				}
+			}
 			else{
 				this.addBlock(new Block('sign',action));
 			}
 		}else if(action=='-'){
-			this.addBlock(new Block('sign',action));
+			this.addBlock(new Block('number',action));
 		}
 	}),
 

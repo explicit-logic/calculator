@@ -92,9 +92,12 @@ a:focus {
 }
 #expression span{
 	display: inline-block;
-	border-radius: 5px;
+    border-radius: 5px;
     margin: 1px;
+    vertical-align: middle;
     padding: 3px;
+    height: 53px;
+    line-height: 49px;
 }
 #expression span:hover{
 	background-color: #333;
