@@ -328,7 +328,7 @@ INPUT.prototype.result=function(){
 	else{
 		var rpn,res; 
 		rpn=RPN(this.expression);
-		console.log(rpn);
+		//console.log(rpn);
 		res=''+evaluate( rpn );
 		this.elem.result.setText( (res.length>3) ? addCommas(res) : res);
 	}
