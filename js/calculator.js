@@ -214,7 +214,11 @@ INPUT.prototype.closeBkt=function(){
 	if(this.nPthes>0){
 		len=this.expression.length;
 		lastBlock=this.expression[len-1];
-		if(lastBlock && lastBlock.type=='sign' && lastBlock.val!=')'){return;}
+		if(lastBlock){
+			if((lastBlock.type=='sign' && lastBlock.val!=')') || (lastBlock.type=='number' && lastBlock.val=='-')){
+				return;
+			}
+		}
 		this.addBlock(new Block('sign',')'));
 		this.nPthes--;
 	}
