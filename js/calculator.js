@@ -141,7 +141,7 @@ function RPN(expression){
 var evaluate=function(){
 	var operators = {
 	    '+': function(x, y){return (x + y);},
-	    '-': function(x, y){return (x - y);},
+	    '-': function(x, y){return (x ? (x - y) : (y*-1));},
 	    '*': function(x, y){return (x * y);},
 	    '/': function(x, y){return (x / y);},
 	    '^': function(x, y){return Math.pow(x,y);}
@@ -154,11 +154,11 @@ var evaluate=function(){
 	        if (token in operators) {
 	            var y=stack.pop(), x= stack.pop();
 	            stack.push(operators[token](x, y));
-	        } else {
+	        }
+	        else {
 	            stack.push(parseFloat(token));
 	        }
 	    });
-
 	    return stack.pop();
 	}
 }();
@@ -447,23 +447,18 @@ Calculator.prototype.buttons=[
 			prevBlock=this.expression[len-2];
 			lastBlock=this.expression[len-1];
 
-			if(prevBlock && prevBlock.type=='sign' && prevBlock.val==')' ){
-				if(lastBlock.type=='sign'){
-					this.addBlock(new Block('number',action));
-				}
-			} 
-			else if(lastBlock){
+			// if(prevBlock && prevBlock.type=='sign' && prevBlock.val==')' ){
+			// 	if(lastBlock.type=='sign'){
+			// 		this.addBlock(new Block('number',action));
+			// 		console.log('num');
+			// 	}
+			// } 
+			if(lastBlock){
 				if(lastBlock.type=='number'){
 					if(lastBlock.val.length<this.maxLen){
-						if(lastBlock.val==='0'){
-							if(action==0){
-								return;
-							}else{
-								lastBlock.val='';
-							}
-						}
-						lastBlock.val+=action;
-						this.changeLastNum(lastBlock.val);
+						this.changeLastNum(
+							(lastBlock.val==='0') ? ((action==0)?'0':''+action) : (lastBlock.val+action)
+							);
 					}
 				}
 				else{
