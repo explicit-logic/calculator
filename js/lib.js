@@ -14,14 +14,15 @@ Tag=Category.dom['tag']=function(elem){
 }, 
 ready=function(fn) {
   if (document.readyState != 'loading'){
-    fn();
+    fn(); 
   } 
   else if (document.addEventListener) {
     document.addEventListener('DOMContentLoaded', fn);
   } else {
     document.attachEvent('onreadystatechange', function() {
-      if (document.readyState != 'loading')
+      if (document.readyState === "interactive"){
         fn();
+       }
     });
   }
   return this;
@@ -41,7 +42,7 @@ Category.dom.preload=function(imgs){
 Tag.fn=Tag.prototype={
 	constructor:Tag,
 	alias:{
-		inside:'in',
+		inside:'$',
 		outside:'out'
 	},
 	setProp:function(name,val){
@@ -65,7 +66,7 @@ Tag.fn=Tag.prototype={
 var Elem=Tag.fn.Elem=function(node){
 	this.node=node;
 	this.is_first=false;
-	this.inside=this.in=
+	this.inside=this.$=
 	this.outside=this.out=
 	null;
 
@@ -100,10 +101,12 @@ var type=Category.other['type']=function(obj){
 	 return Object.prototype.toString.call(obj).replace(/^\[object (.+)\]$/, '$1').toLowerCase();
 },
 on=Category['event']['on']=function(el, type, handler) {
-  if (el.attachEvent) el.attachEvent('on'+type, handler); else el.addEventListener(type, handler);
+	if (el.addEventListener) {el.addEventListener(type, handler);} 
+	else {el.attachEvent('on' + type, function(){handler.call(el);});}
 },
 off=Category['event']['off']=function(el, type, handler) {
-  if (el.detachEvent) el.detachEvent('on'+type, handler); else el.removeEventListener(type, handler);
+	if (el.removeEventListener){el.removeEventListener(type, handler);}
+  	else{el.detachEvent('on' + type, handler);}
 },
 extend=Category.other['extend']=function(out) {
   out = out || {};

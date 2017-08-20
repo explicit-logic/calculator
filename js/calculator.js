@@ -203,8 +203,7 @@ Keyboard.prototype.init=function(){
 		return function(e){
 			if( kbrd.isEnabled() ){
 				if ( !e.metaKey && !e.ctrlKey) {
-		    		e.preventDefault();
-		  		}
+		    		e.preventDefault ? e.preventDefault() : (e.returnValue = false);		  		}
 				var code=e.keyCode;
 				if(e.shiftKey){
 					code*=16;
@@ -264,7 +263,7 @@ INPUT.prototype.init=function(){
 				}
 			}
 		}
-		e.preventDefault();
+		e.preventDefault ? e.preventDefault() : (e.returnValue = false);
 	});
 
 };
@@ -273,18 +272,18 @@ INPUT.prototype.openBkt=function(){
 		len=this.expression.length;
 		lastBlock=this.expression[len-1];
 	if(lastBlock){
-		if(lastBlock.type=='sign' && lastBlock.val!=')'){
-			this.addBlock(new Block('sign','('));
+		if(lastBlock.type=='sign' || (lastBlock.type=='bracket' && lastBlock.val=='(')){
+			this.addBlock(new Block('bracket','('));
 			this.nPthes++;
 		}
 		else if(lastBlock.type=='number' && lastBlock.val=='-'){
 			this.changeLastType('sign');
-			this.addBlock(new Block('sign','('));
+			this.addBlock(new Block('bracket','('));
 			this.nPthes++;
 		}
 	}
 	else{
-		this.addBlock(new Block('sign','('));
+		this.addBlock(new Block('bracket','('));
 		this.nPthes++;
 	}
 };
@@ -294,12 +293,12 @@ INPUT.prototype.closeBkt=function(){
 		len=this.expression.length;
 		lastBlock=this.expression[len-1];
 		if(lastBlock){
-			if((lastBlock.type=='sign' && lastBlock.val!=')') || (lastBlock.type=='number' && lastBlock.val=='-')){
+			if(lastBlock.type=='sign' || (lastBlock.type=='number' && lastBlock.val=='-')){
 				return;
 			}
+			this.addBlock(new Block('bracket',')'));
+			this.nPthes--;
 		}
-		this.addBlock(new Block('sign',')'));
-		this.nPthes--;
 	}
 };
 INPUT.prototype.addBlock=function(block){
@@ -313,6 +312,66 @@ INPUT.prototype.addFirst=function(block){
 	this.elem.exprsn.first().span({'id':block.id,'class':block.type,
 				'text':block.val});
 	return block;
+};
+INPUT.prototype.addDigit=function(digit){
+	var len,val,
+	lastBlock;
+	
+	len=this.expression.length;
+	lastBlock=this.expression[len-1];
+
+	if(lastBlock){
+		if(lastBlock.type=='number'){
+			if(lastBlock.val.length<this.maxLen){
+				this.changeLastNum(
+					(lastBlock.val==='0') ? ((digit==0)?'0':''+digit) : (lastBlock.val+digit)
+					);
+			}
+		}
+		else{
+			if( lastBlock.val!=')' ){
+				this.addBlock(new Block('number',digit));
+			}
+		}
+	}
+	else{
+		this.addBlock(new Block('number',digit));
+	}
+};
+INPUT.prototype.addSign=function(sign){
+	var lastBlock,len,lastCh;
+	len=this.expression.length;
+	lastBlock=this.expression[len-1];
+	if(lastBlock){
+		if(lastBlock.type=='sign'){
+			if(lastBlock.val==')'  ){
+				this.addBlock(new Block('sign',sign));
+			} else if(sign=='-' && lastBlock.val=='('){
+				this.addBlock(new Block('number',sign));
+			}
+		}
+		else if(lastBlock.type=='number'){
+			if(lastBlock.val!='-'){
+				lastCh=lastBlock.val.slice(-1);
+				if(lastCh=='.'){
+					this.changeLastNum( lastBlock.val.slice(0, -1) );
+				}
+				this.addBlock(new Block('sign',sign));
+			}
+		}
+	}else if(sign=='-'){
+		this.addBlock(new Block('number',sign));
+	}
+};
+INPUT.prototype.addDot=function(){
+	var len, lastBlock;
+	lastBlock=this.expression[this.expression.length-1];
+	if(lastBlock){
+		len=lastBlock.val.length;
+		if( lastBlock.type=='number' && len>0 && len<(this.maxLen-1) && !rPoint.test(lastBlock.val)){
+			this.changeLastNum(lastBlock.val+'.');
+		}
+	}
 };
 INPUT.prototype.beforeRemove=function(block){
 	if(block.type=='sign'){
@@ -363,7 +422,6 @@ INPUT.prototype.removeBlock=function(elem){
 
 			return index;
 		}
-
 	}
 };
 INPUT.prototype.removeById=function(id){
@@ -411,10 +469,7 @@ INPUT.prototype.result=function(){
 	var len=this.expression.length,lastBlock;
 	if(len>0){
 		lastBlock=this.expression[len-1];
-		if(lastBlock.type=='sign' && lastBlock.val!=')'){
-			return;
-		}
-		else{
+		if(lastBlock.type!='sign'){
 			if(this.nPthes>0){
 				alert('The parenthesis are unbalanced.\n Check your expression again!')
 			}
@@ -424,12 +479,31 @@ INPUT.prototype.result=function(){
 				//console.log(rpn);
 				res=''+evaluate( rpn );
 				this.elem.result.setText( (res.length>3) ? addCommas(res) : res);
+				location.hash=this.toString();
 				if(res.length>20){
 					this.elem.result.attr({'title':res});
 				}
 			}
 		}
 	}
+};
+INPUT.prototype.charCount=function(){
+	var expr=this.expression,
+	i=expr.length,
+	count=0;
+	for(;i--;){
+		count+=expr[i].val.length;
+	}
+	return count;
+};
+INPUT.prototype.toString=function(){
+	var expr=this.expression,
+	i=0, len=expr.length,
+	out='';
+	for(;i<len;i++){
+		out+=expr[i].val;
+	}
+	return out;
 };
 
 var Calculator=function(container){
@@ -456,13 +530,13 @@ Calculator.prototype.init=function(){
 		};
 	for(pos in panel){
 		if(panel.hasOwnProperty(pos)){
-			panel[pos]=container.div({'class':'tools '+pos+'-panel'}).in;
+			panel[pos]=container.div({'class':'tools '+pos+'-panel'}).$;
 		}
 	}
-	scene=container.div({'class':'expression-scene'}).in;
-	elem.exprsn=scene.div({'class':'wrapper expression'}).in
-						.div({'id':'expression'}).in;
-	elem.result=scene.div({'id':'result'}).in;
+	scene=container.div({'class':'expression-scene'}).$;
+	elem.exprsn=scene.div({'class':'wrapper expression'}).$
+						.div({'id':'expression'}).$;
+	elem.result=scene.div({'id':'result'}).$;
 
 	this.keyboard=new Keyboard();
 	this.input=new INPUT([],elem);
@@ -478,44 +552,23 @@ var rPoint=/\./;
 Calculator.prototype.buttons=[
 	//arithmetic
 	buttons('arithmetic',['+','-','*','/','^'],function(panel){
-		return panel.left.div({'class':'vertical buttons'}).in;
+		return panel.left.div({'class':'vertical buttons'}).$;
 	},
 	function(action){
-		var elem=this.container.a({'href':'#','class':'button round gray','text':action}).in;
+		var elem=this.container.a({'href':'#','class':'button round gray','text':action}).$;
 		verticalCenter(this.container);
 		return elem;
 	},
 	function(sign){
-		var lastBlock,len,lastCh;
-		len=this.expression.length;
-		lastBlock=this.expression[len-1];
-		if(lastBlock){
-			if(lastBlock.type=='sign'){
-				if(lastBlock.val==')'  ){
-					this.addBlock(new Block('sign',sign));
-				} else if(sign=='-' && lastBlock.val=='('){
-					this.addBlock(new Block('number',sign));
-				}
-			}
-			else if(lastBlock.type=='number'){
-				if(lastBlock.val!='-'){
-					lastCh=lastBlock.val.slice(-1);
-					if(lastCh=='.'){
-						this.changeLastNum( lastBlock.val.slice(0, -1) );
-					}
-					this.addBlock(new Block('sign',sign));
-				}
-			}
-		}else if(sign=='-'){
-			this.addBlock(new Block('number',sign));
-		}
-	},[[107,16*187],[109,189],[16*56,106],[111,191],16*54]),
+		this.addSign(sign);
+	},
+	[[107,16*187],[109,189],[16*56,106],[111,191],16*54]),
 
 	//parenthesis
 
 	buttons('parenthesis',['(',')'],'arithmetic',
 	function(action){
-		var elem=this.container.a({'href':'#','class':'button round gray','text':action}).in;
+		var elem=this.container.a({'href':'#','class':'button round gray','text':action}).$;
 		verticalCenter(this.container);
 		return elem;
 	},
@@ -530,13 +583,13 @@ Calculator.prototype.buttons=[
 
 	//numeric
 	buttons('numeric',[0,'.',1,2,3,4,5,6,7,8,9],function(panel){
-		return panel.top.div({'class':'horizontal buttons'}).in;
+		return panel.top.div({'class':'horizontal buttons'}).$;
 	},
 	function(action){
-		return this.container.a({'href':'#','class':'button round gray','text':action}).in;
+		return this.container.a({'href':'#','class':'button round gray','text':action}).$;
 	},function(){
 
-		var num, rsign, dot, clear;
+		var num, dot, clear;
 
 		clear=function(input){
 			if(input.elem.result.node.textContent!==''){
@@ -544,85 +597,16 @@ Calculator.prototype.buttons=[
 			}
 		};
 
-		num=function(action){
-			var len,val,
-			lastBlock,prevBlock;
-			
-			len=this.expression.length;
-			prevBlock=this.expression[len-2];
-			lastBlock=this.expression[len-1];
-
-			// if(prevBlock && prevBlock.type=='sign' && prevBlock.val==')' ){
-			// 	if(lastBlock.type=='sign'){
-			// 		this.addBlock(new Block('number',action));
-			// 		console.log('num');
-			// 	}
-			// } 
-			if(lastBlock){
-				if(lastBlock.type=='number'){
-					if(lastBlock.val.length<this.maxLen){
-						this.changeLastNum(
-							(lastBlock.val==='0') ? ((action==0)?'0':''+action) : (lastBlock.val+action)
-							);
-					}
-				}
-				else{
-					if( lastBlock.val!=')' ){
-						this.addBlock(new Block('number',action));
-					}
-				}
-			}
-			else{
-				this.addBlock(new Block('number',action));
-			}
-
+		num=function(digit){
+			this.addDigit(digit);
 			clear(this);
 		};
 
-		rsign=function(){
-			var input=this,
-			len,
-			lastBlock,prevBlock;
-			
-			len=this.expression.length;
-			prevBlock=this.expression[len-2];
-			lastBlock=this.expression[len-1];
-
-			if(prevBlock){
-				if(prevBlock.val=='-'){
-					if(len>2){
-						input.changeBlock(len-2,'+');
-					}
-					else{
-						input.removeFirst();
-					}
-				}
-				else if(prevBlock.val=='+'){
-					input.changeBlock(len-2,'-');
-				}
-			} 
-			else if(lastBlock){
-				if(lastBlock.val=='-'){
-					input.removeFirst();
-				} 
-				else{
-					input.addFirst(new Block('sign','-'));
-				}
-			}
-			else{
-				input.addFirst(new Block('sign','-'));
-			}
-			clear(this); 
-		};
-
 		dot=function(){
-			var len, lastBlock;
+			var lastBlock;
 			lastBlock=this.expression[this.expression.length-1];
+			this.addDot();
 			if(lastBlock){
-				len=lastBlock.val.length;
-				if( lastBlock.type=='number' && len>0 && len<(this.maxLen-1) && !rPoint.test(lastBlock.val)){
-					this.changeLastNum(lastBlock.val+'.');
-				}
 				clear(this);
 			}
 		};
@@ -634,15 +618,15 @@ Calculator.prototype.buttons=[
 
 	//edit
 	buttons('edit',['C','<='],function(panel){
-		return panel.bottom.div({'class':'horizontal buttons-left'}).in;
+		return panel.bottom.div({'class':'horizontal buttons-left'}).$;
 	},
 	[
 		function(action){
-			return this.container.a({'href':'#','class':'button rect magenta','style':'width:130px','text':action}).in;
+			return this.container.a({'href':'#','class':'button rect magenta','style':'width:130px','text':action}).$;
 		},
 		function(action){
 			return this.container.a({'href':'#','class':'button rect gray',
-				'text':String.fromCharCode(8592)}).in;
+				'text':String.fromCharCode(8592)}).$;
 		}
 	],
 	[
@@ -655,10 +639,10 @@ Calculator.prototype.buttons=[
 	],[27,8]),
 
 	buttons('result',['='],function(panel){
-		return panel.bottom.div({'class':'horizontal buttons-right'}).in;
+		return panel.bottom.div({'class':'horizontal buttons-right'}).$;
 	},
 	[function(action){
-		return this.container.a({'href':'#','class':'button rect blue','style':'width:75px','text':action}).in;
+		return this.container.a({'href':'#','class':'button rect blue','style':'width:75px','text':action}).$;
 	}],function(){
 		this.result();
 	},[[13,187]])
@@ -670,7 +654,7 @@ Calculator.prototype.insertButtons=function(){
 	panel=this.panel,
 	buttons=this.buttons,
 	button,
-	container,
+	container, target,
 	c={},
 	eachInsert,
 	eachRun,
@@ -683,33 +667,39 @@ Calculator.prototype.insertButtons=function(){
 
 	for(;i<len;i++){
 		button=buttons[i];
-		container=buttons[i].container;
-		if(typeof container == 'string'){
+		container=null;
+		target=buttons[i].container;
+		if(typeof target == 'string'){
 			j=buttons.length;
-			if(c.hasOwnProperty(container)){
-				container=c[container];
+			if(c.hasOwnProperty(target)){
+				container=c[target];
 			}
 			else{
 				for(;j--;){
-					if(buttons[j].name===container){
-						c[container]=buttons[j].container(panel);
-						buttons[j].container=container;
+					if(buttons[j].name===target){
+						c[target]=buttons[j].container(panel);
+						buttons[j].container=target;
 						break;
 					}
 				}
-				if(c.hasOwnProperty(container)){
-					container=c[container];
+				if(c.hasOwnProperty(target)){
+					container=c[target];
 				}
 				else{
 					return console.log('buttons container not found!');
 				}
 			}
 
-		}else{
-			container=container(panel);
+		}else if(typeof target=='function'){
+			container=target(panel);
 			c[button.name]=container;
 		}
-		buttons[i].container=container;
+		if(container){
+			buttons[i].container=container;
+		}
+		else{
+			continue;
+		}
 		
 		if('array'===type(button.insert)){
 			eachInsert=function(insrs){
@@ -749,9 +739,12 @@ Calculator.prototype.insertButtons=function(){
 			elem=eachInsert(button.actions[j],j);
 			if(fn=eachRun(j)){
 				elem.click(function(run,action){
-				return function(e){
+				return function(event){
 					run.call(calc.input,action);
-					e.preventDefault();
+					//event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+					if(event['preventDefault']) {
+						event.preventDefault();}
+						 else{ event.returnValue = false;}
 					}
 				}(fn,button.actions[j] ));
 				if(eachKey){
