@@ -102,7 +102,7 @@ var type=Category.other['type']=function(obj){
 },
 on=Category['event']['on']=function(el, type, handler) {
 	if (el.addEventListener) {el.addEventListener(type, handler);} 
-	else {el.attachEvent('on' + type, function(){handler.call(el);});}
+	else {el.attachEvent('on' + type, function(){handler.call(el,window.event);});}
 },
 off=Category['event']['off']=function(el, type, handler) {
 	if (el.removeEventListener){el.removeEventListener(type, handler);}

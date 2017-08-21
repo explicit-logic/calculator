@@ -202,8 +202,9 @@ Keyboard.prototype.init=function(){
 	handler=function(kbrd){
 		return function(e){
 			if( kbrd.isEnabled() ){
-				if ( !e.metaKey && !e.ctrlKey) {
-		    		e.preventDefault ? e.preventDefault() : (e.returnValue = false);		  		}
+				if (!e.metaKey && !e.ctrlKey) {
+		    		e.preventDefault ? e.preventDefault() : (e.returnValue = false);
+		    	}
 				var code=e.keyCode;
 				if(e.shiftKey){
 					code*=16;
@@ -216,10 +217,10 @@ Keyboard.prototype.init=function(){
 	};
 	ctrl=function(){
 		handler=handler(this);
-		on(window,"keydown", handler);
+		on(document,"keydown", handler);
 	};
 	ctrl.off=function(){
-		off(window,"keydown", handler);
+		off(document,"keydown", handler);
 	}
 	return ctrl;
 }();
@@ -739,12 +740,11 @@ Calculator.prototype.insertButtons=function(){
 			elem=eachInsert(button.actions[j],j);
 			if(fn=eachRun(j)){
 				elem.click(function(run,action){
-				return function(event){
+				return function(e){
 					run.call(calc.input,action);
 					//event.preventDefault ? event.preventDefault() : (event.returnValue = false);
-					if(event['preventDefault']) {
-						event.preventDefault();}
-						 else{ event.returnValue = false;}
+					if(e.preventDefault) {e.preventDefault();}
+					else{ e.returnValue = false;}
 					}
 				}(fn,button.actions[j] ));
 				if(eachKey){
