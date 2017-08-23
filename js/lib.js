@@ -13,7 +13,7 @@ Tag=Category.dom['tag']=function(elem){
 	return new Tag.fn.Elem(elem || document.body);
 }, 
 ready=function(fn) {
-  if (document.readyState != 'loading'){
+  if (document.readyState === "complete"){
     fn(); 
   } 
   else if (document.addEventListener) {
