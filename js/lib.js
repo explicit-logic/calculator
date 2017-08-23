@@ -20,7 +20,7 @@ ready=function(fn) {
     document.addEventListener('DOMContentLoaded', fn);
   } else {
     document.attachEvent('onreadystatechange', function() {
-      if (document.readyState === "interactive"){
+      if (document.readyState === "complete"){
         fn();
        }
     });
