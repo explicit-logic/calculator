@@ -28,10 +28,29 @@ var ID=function(){
 		return ''+n;
 	}
 }();
-var Block=function(type,val){
+var Num=function(val){
 	this.id='blk_'+ID();
-	this.type=type;
 	this.val=''+val;
+};
+Num.prototype.type='number';
+Num.prototype.format=function(){
+	return ((this.val.length>3) ? addCommas(this.val) : this.val);
+};
+var Sign=function(val){
+	this.id='blk_'+ID();
+	this.val=''+val;
+};
+Sign.prototype.type='sign';
+Sign.prototype.format=function(){
+	return this.val;
+};
+var Bracket=function(val){
+	this.id='blk_'+ID();
+	this.val=''+val;
+};
+Bracket.prototype.type='bracket';
+Bracket.prototype.format=function(){
+	return this.val;
 };
 function RPN(expression){
 	var stack=[], out=[],
@@ -51,99 +70,102 @@ function RPN(expression){
 	bracket,
 	opr, endopr, lastopr,
 	len=expression.length,i=0,
-	rpn;
+	rpn,
+	types={
+		'number':function(block){
+			out.push(block.val);
+			lastnum=true;
+		},
+		'bracket':function(block){
+			if(block.val==='('){
+				stack.push(block.val);
+				lastnum=false;
+			}
+			else if(block.val===')'){
+				bracket=false;
+				while(!bracket && stack){
+					opr=stack.pop();
+					if(opr=='('){
+						bracket=true;
+					}
+					else{
+						out.push(opr);
+					}
+				}
+				if(!bracket){
+					throw new Error('The parenthesis are unbalanced!');
+					return false;
+				}
+				lastnum=false;
+			}
+		},
+		'sign':function(block){
+			endopr=false;
+			while(!endopr){
+				lastopr=stack.pop();
+				if(lastopr){
+					currPr=prior[block.val]['prior'];
+					currAsc=prior[block.val]['assoc'];
+					prevPr=prior[lastopr]['prior'];
+
+					switch(currAsc){
+						case 'left':
+								if(currPr>prevPr){
+									stack.push(lastopr);
+									stack.push(block.val);
+									endopr=true;
+								}
+								else if(currPr<=prevPr){
+									out.push(lastopr);
+								}
+						break;
+						case 'right':
+								if(currPr>=prevPr){
+									stack.push(lastopr);
+									stack.push(block.val);
+									endopr=true;
+								}
+								else if(currPr<prevPr){
+									out.push(lastopr);
+								}
+						break;
+					}
+				}
+				else{
+					stack.push(block.val);
+					endopr=true;
+				}
+			}
+			lastnum=false;
+		},
+		'default':function(){
+			return false;
+		}
+	};
 	if(len){
 		if(expression[0].type!='number'){
-			expression.unshift(new Block('number',0));
-			len=expression.length;
+			types['number'](new Num(0));
 		}
 		lastnum=true;
 		for(;i<len;i++){
 			block=expression[i];
-			if(block.type=='sign'){
-				if(block.val==='('){
-					stack.push(block.val);
-					lastnum=false;
-				}
-				else if(block.val===')'){
-					bracket=false;
-					while(!bracket && stack){
-						opr=stack.pop();
-						if(opr=='('){
-							bracket=true;
-						}
-						else{
-							out.push(opr);
-						}
-					}
-					if(!bracket){
-						console.log('The parenthesis are unbalanced!');
-						return false;
-					}
-					lastnum=false;
-				}
-				else{
-					endopr=false;
-					while(!endopr){
-						lastopr=stack.pop();
-						if(lastopr){
-							currPr=prior[block.val]['prior'];
-							currAsc=prior[block.val]['assoc'];
-							prevPr=prior[lastopr]['prior'];
-
-							switch(currAsc){
-								case 'left':
-										if(currPr>prevPr){
-											stack.push(lastopr);
-											stack.push(block.val);
-											endopr=true;
-										}
-										else if(currPr<=prevPr){
-											out.push(lastopr);
-										}
-									
-								break;
-								case 'right':
-										if(currPr>=prevPr){
-											stack.push(lastopr);
-											stack.push(block.val);
-											endopr=true;
-										}
-										else if(currPr<prevPr){
-											out.push(lastopr);
-										}
-								break;
-							}
-						}
-						else{
-							stack.push(block.val);
-							endopr=true;
-						}
-					}
-					lastnum=false;
-				}	
-			}
-			else if(block.type=='number'){
-				out.push(block.val);
-				lastnum=true;
-			}
+			(types[block.type] || types['default'])(block);
 		}
 		rpn=out;
 		while(block=stack.pop()){
 			rpn.push(block);
 		}
 		return rpn;
-
 	}
 	else{
-		console.log('expression is empty!');
+		throw new Error('Expression is empty!');
 	}
 }
 
 // var evaluate=function(){
 // 	var operators = {
 // 	    '+': function(x, y){return (x + y);},
-// 	    '-': function(x, y){return (x ? (x - y) : (y*-1));},
+// 	    '-': function(x, y){return (x ? (x - y) : y*-1);},
 // 	    '*': function(x, y){return (x * y);},
 // 	    '/': function(x, y){return (x / y);},
 // 	    '^': function(x, y){return Math.pow(x,y);}
@@ -168,7 +190,7 @@ function RPN(expression){
 var evaluate=function(){
 	var operators = {
 	    '+': function(x, y){return (x.plus(y));},
-	    '-': function(x, y){return (x ? (x.minus(y)) : (y.times(-1)));},
+	    '-': function(x, y){return (x ? x.minus(y) : y.times(-1));},
 	    '*': function(x, y){return (x.times(y));},
 	    '/': function(x, y){return ( x.dividedBy(y) );},
 	    '^': function(x, y){return x.toPower(y);}
@@ -176,6 +198,7 @@ var evaluate=function(){
 
 	return function(expr){
 	    var stack = [];
+	    var k=0;
 	    
 	    expr.forEach(function(token){
 	        if (token in operators) {
@@ -240,9 +263,9 @@ Keyboard.prototype.detach=function(){
 	this.init.off();
 };
 
-var INPUT=function(expression,elem){
+var INPUT=function(elem){
 	this.nPthes=0;
-	this.expression=expression;
+	this.expression=[];
 	this.elem=elem;
 	this.init();
 };
@@ -272,46 +295,41 @@ INPUT.prototype.openBkt=function(){
 	var lastBlock,len;
 		len=this.expression.length;
 		lastBlock=this.expression[len-1];
-	if(lastBlock){
-		if(lastBlock.type=='sign' || (lastBlock.type=='bracket' && lastBlock.val=='(')){
-			this.addBlock(new Block('bracket','('));
-			this.nPthes++;
-		}
-		else if(lastBlock.type=='number' && lastBlock.val=='-'){
-			this.changeLastType('sign');
-			this.addBlock(new Block('bracket','('));
-			this.nPthes++;
-		}
+	
+	if(!lastBlock || lastBlock.type=='sign' || (lastBlock.type=='bracket' && lastBlock.val=='(')){
+		this.addBlock(new Bracket('('));
+		this.nPthes++;
 	}
-	else{
-		this.addBlock(new Block('bracket','('));
+	else if(lastBlock.type=='number' && lastBlock.val=='-'){
+		this.changeLastType('sign');
+		this.addBlock(new Bracket('('));
 		this.nPthes++;
 	}
 };
 INPUT.prototype.closeBkt=function(){
-	var lastBlock,len;
+	var lastBlock,len,type;
 	if(this.nPthes>0){
 		len=this.expression.length;
 		lastBlock=this.expression[len-1];
 		if(lastBlock){
-			if(lastBlock.type=='sign' || (lastBlock.type=='number' && lastBlock.val=='-')){
-				return;
+			type=lastBlock.type;
+			if(type!='sign' && (type!='number' || lastBlock.val!='-')){
+				this.addBlock(new Bracket(')'));
+				this.nPthes--;
 			}
-			this.addBlock(new Block('bracket',')'));
-			this.nPthes--;
 		}
 	}
 };
 INPUT.prototype.addBlock=function(block){
 	this.expression.push(block);
 	this.elem.exprsn.span({'id':block.id,'class':block.type,
-				'text':block.val});
+				'text':block.format()});
 	return block;
 };
 INPUT.prototype.addFirst=function(block){
 	this.expression.unshift(block);
 	this.elem.exprsn.first().span({'id':block.id,'class':block.type,
-				'text':block.val});
+				'text':block.format()});
 	return block;
 };
 INPUT.prototype.addDigit=function(digit){
@@ -330,13 +348,13 @@ INPUT.prototype.addDigit=function(digit){
 			}
 		}
 		else{
-			if( lastBlock.val!=')' ){
-				this.addBlock(new Block('number',digit));
+			if( lastBlock.type=='sign' || lastBlock.val=='('){
+				this.addBlock(new Num(digit));
 			}
 		}
 	}
 	else{
-		this.addBlock(new Block('number',digit));
+		this.addBlock(new Num(digit));
 	}
 };
 INPUT.prototype.addSign=function(sign){
@@ -344,11 +362,11 @@ INPUT.prototype.addSign=function(sign){
 	len=this.expression.length;
 	lastBlock=this.expression[len-1];
 	if(lastBlock){
-		if(lastBlock.type=='sign'){
+		if(lastBlock.type=='bracket'){
 			if(lastBlock.val==')'  ){
-				this.addBlock(new Block('sign',sign));
+				this.addBlock(new Sign(sign));
 			} else if(sign=='-' && lastBlock.val=='('){
-				this.addBlock(new Block('number',sign));
+				this.addBlock(new Num(sign));
 			}
 		}
 		else if(lastBlock.type=='number'){
@@ -357,11 +375,11 @@ INPUT.prototype.addSign=function(sign){
 				if(lastCh=='.'){
 					this.changeLastNum( lastBlock.val.slice(0, -1) );
 				}
-				this.addBlock(new Block('sign',sign));
+				this.addBlock(new Sign(sign));
 			}
 		}
 	}else if(sign=='-'){
-		this.addBlock(new Block('number',sign));
+		this.addBlock(new Num(sign));
 	}
 };
 INPUT.prototype.addDot=function(){
@@ -375,7 +393,7 @@ INPUT.prototype.addDot=function(){
 	}
 };
 INPUT.prototype.beforeRemove=function(block){
-	if(block.type=='sign'){
+	if(block.type=='bracket'){
 		if(block.val==')'){
 			this.nPthes++;
 		} else if(block.val=='('){
@@ -447,6 +465,7 @@ INPUT.prototype.clear=function(){
 	this.nPthes=0;
 	this.elem.exprsn.empty();
 	this.clearRes();
+	location.hash='';
 };
 INPUT.prototype.backspace=function(){
 	var len=this.expression.length,lastBlock;
@@ -475,12 +494,13 @@ INPUT.prototype.result=function(){
 				alert('The parenthesis are unbalanced.\n Check your expression again!')
 			}
 			else{
-				var rpn,res; 
+				var rpn,res,hash; 
 				rpn=RPN(this.expression);
 				//console.log(rpn);
 				res=''+evaluate( rpn );
 				this.elem.result.setText( (res.length>3) ? addCommas(res) : res);
-				location.hash=this.toString();
+				hash=this.toString();
+				location.hash=hash;
 				if(res.length>20){
 					this.elem.result.attr({'title':res});
 				}
@@ -497,6 +517,43 @@ INPUT.prototype.charCount=function(){
 	}
 	return count;
 };
+INPUT.prototype.parser=function(){
+	var numSet='01234567890.',
+	signSet='+-/*^',
+	brktSet='()',
+	dot='.',
+	isNum=function(ch){return (numSet.indexOf(ch)!=-1);},
+	isSign=function(ch){return (signSet.indexOf(ch)!=-1);},
+	isDot=function(ch){return (ch===dot)},
+	typeBkt=function(ch){
+		if(ch==='('){
+			return 'open';
+		} else if(ch===')'){
+			return 'close';
+		}
+	};
+
+	return function(expr){
+		var i=0, len=expr.length,
+		ch,
+		type;
+		this.expression=[];
+		for(;i<len;i++){
+			ch=expr.charAt(i);
+			if(isNum(ch)){
+				this.addDigit(ch);
+			} 
+			else if(isSign(ch)){
+				this.addSign(ch);
+			}
+			else if(type=typeBkt(ch)){
+				this[type+'Bkt']();
+			}
+		}
+		this.result();
+	}
+
+}();
 INPUT.prototype.toString=function(){
 	var expr=this.expression,
 	i=0, len=expr.length,
@@ -538,9 +595,9 @@ Calculator.prototype.init=function(){
 	elem.exprsn=scene.div({'class':'wrapper expression'}).$
 						.div({'id':'expression'}).$;
 	elem.result=scene.div({'id':'result'}).$;
-
 	this.keyboard=new Keyboard();
-	this.input=new INPUT([],elem);
+	this.input=new INPUT(elem);
+	this.input.parser(location.hash);
 	this.insertButtons();
 };
 
