@@ -70,95 +70,92 @@ function RPN(expression){
 	bracket,
 	opr, endopr, lastopr,
 	len=expression.length,i=0,
-	rpn,
-	types={
-		'number':function(block){
-			out.push(block.val);
-			lastnum=true;
-		},
-		'bracket':function(block){
-			if(block.val==='('){
-				stack.push(block.val);
-				lastnum=false;
-			}
-			else if(block.val===')'){
-				bracket=false;
-				while(!bracket && stack){
-					opr=stack.pop();
-					if(opr=='('){
-						bracket=true;
-					}
-					else{
-						out.push(opr);
-					}
-				}
-				if(!bracket){
-					throw new Error('The parenthesis are unbalanced!');
-					return false;
-				}
-				lastnum=false;
-			}
-		},
-		'sign':function(block){
-			endopr=false;
-			while(!endopr){
-				lastopr=stack.pop();
-				if(lastopr){
-					currPr=prior[block.val]['prior'];
-					currAsc=prior[block.val]['assoc'];
-					prevPr=prior[lastopr]['prior'];
-
-					switch(currAsc){
-						case 'left':
-								if(currPr>prevPr){
-									stack.push(lastopr);
-									stack.push(block.val);
-									endopr=true;
-								}
-								else if(currPr<=prevPr){
-									out.push(lastopr);
-								}
-						break;
-						case 'right':
-								if(currPr>=prevPr){
-									stack.push(lastopr);
-									stack.push(block.val);
-									endopr=true;
-								}
-								else if(currPr<prevPr){
-									out.push(lastopr);
-								}
-						break;
-					}
-				}
-				else{
-					stack.push(block.val);
-					endopr=true;
-				}
-			}
-			lastnum=false;
-		},
-		'default':function(){
-			return false;
-		}
-	};
+	rpn;
 	if(len){
 		if(expression[0].type!='number'){
-			types['number'](new Num(0));
+			expression.unshift(new Num(0));
+			len=expression.length;
 		}
 		lastnum=true;
 		for(;i<len;i++){
 			block=expression[i];
-			(types[block.type] || types['default'])(block);
+			if(block.type=='bracket'){
+				if(block.val==='('){
+					stack.push(block.val);
+					lastnum=false;
+				}
+				else if(block.val===')'){
+					bracket=false;
+					while(!bracket && stack){
+						opr=stack.pop();
+						if(opr=='('){
+							bracket=true;
+						}
+						else{
+							out.push(opr);
+						}
+					}
+					if(!bracket){
+						console.log('The parenthesis are unbalanced!');
+						return false;
+					}
+					lastnum=false;
+				}
+			}
+			else if(block.type=='sign'){
+				endopr=false;
+				while(!endopr){
+					lastopr=stack.pop();
+					if(lastopr){
+						currPr=prior[block.val]['prior'];
+						currAsc=prior[block.val]['assoc'];
+						prevPr=prior[lastopr]['prior'];
+
+						switch(currAsc){
+							case 'left':
+									if(currPr>prevPr){
+										stack.push(lastopr);
+										stack.push(block.val);
+										endopr=true;
+									}
+									else if(currPr<=prevPr){
+										out.push(lastopr);
+									}
+								
+							break;
+							case 'right':
+									if(currPr>=prevPr){
+										stack.push(lastopr);
+										stack.push(block.val);
+										endopr=true;
+									}
+									else if(currPr<prevPr){
+										out.push(lastopr);
+									}
+							break;
+						}
+					}
+					else{
+						stack.push(block.val);
+						endopr=true;
+					}
+				}
+				lastnum=false;
+			}	
+			else if(block.type=='number'){
+				out.push(block.val);
+				lastnum=true;
+			}
 		}
 		rpn=out;
 		while(block=stack.pop()){
 			rpn.push(block);
 		}
 		return rpn;
+
 	}
 	else{
-		throw new Error('Expression is empty!');
+		console.log('expression is empty!');
 	}
 }
 
@@ -271,6 +268,7 @@ var INPUT=function(elem){
 };
 INPUT.prototype.maxLen=13;
 
+
 INPUT.prototype.init=function(){
 	var input=this;
 	this.elem.exprsn.click(function(e){
@@ -288,30 +286,8 @@ INPUT.prototype.init=function(){
 		}
 		e.preventDefault ? e.preventDefault() : (e.returnValue = false);
 	});
-	input.changeHash(location.hash);
-	on(window,'hashchange',function(){
-		input.changeHash(location.hash);
-	});
 
 };
-INPUT.prototype.changeHash=function(){
-	var prevHash;
-	return function(hash){
-		if(hash || hash===''){
-			hash=(hash.charAt(0)==='#')?hash:'#'+hash;
-			if(prevHash!==hash){
-				prevHash=hash;
-				if(hash===location.hash){
-					this.reset();
-					this.result(hash);
-				}
-				else{
-					location.hash=hash;
-				}
-			}
-		} 
-	}
-}();
 INPUT.prototype.openBkt=function(){
 	var lastBlock,len;
 		len=this.expression.length;
@@ -404,12 +380,15 @@ INPUT.prototype.addSign=function(sign){
 	}
 };
 INPUT.prototype.addDot=function(){
-	var len, lastBlock;
+	var len, lastBlock, val;
 	lastBlock=this.expression[this.expression.length-1];
 	if(lastBlock){
-		len=lastBlock.val.length;
-		if( lastBlock.type=='number' && len>0 && len<(this.maxLen-1) && !rPoint.test(lastBlock.val)){
-			this.changeLastNum(lastBlock.val+'.');
+		val=lastBlock.val;
+		len=val.length;
+		if( lastBlock.type=='number' && len>0 && val!='-'
+			&& len<(this.maxLen-1) && !rPoint.test(val)
+			){
+			this.changeLastNum(val+'.');
 		}
 	}
 };
@@ -481,15 +460,12 @@ INPUT.prototype.clearRes=function(){
 	this.elem.result.empty();
 	this.elem.result.attr({'title':''});
 };
-INPUT.prototype.reset=function(){
+INPUT.prototype.clear=function(){
 	this.expression=[];
 	this.nPthes=0;
 	this.elem.exprsn.empty();
 	this.clearRes();
-};
-INPUT.prototype.clear=function(){
-	this.reset();
-	//this.changeHash('');
+	location.hash='';
 };
 INPUT.prototype.backspace=function(){
 	var len=this.expression.length,lastBlock;
@@ -510,41 +486,28 @@ INPUT.prototype.backspace=function(){
 	}
 };
 INPUT.prototype.result=function(){
-	var output=function(input){
-		var lastBlock=input.expression[input.expression.length-1],
-			rpn,res;
-			if(lastBlock.type!='sign'){
-				if(input.nPthes>0){
-					alert('The parenthesis are unbalanced.\n Check your expression again!')
+	var len=this.expression.length,lastBlock;
+	if(len>0){
+		lastBlock=this.expression[len-1];
+		if(lastBlock.type!='sign'){
+			if(this.nPthes>0){
+				alert('The parenthesis are unbalanced.\n Check your expression again!')
+			}
+			else{
+				var rpn,res,hash;
+				hash=this.toString(); 
+				rpn=RPN(this.expression);
+				//console.log(rpn);
+				res=''+evaluate( rpn );
+				this.elem.result.setText( (res.length>3) ? addCommas(res) : res);
+				location.hash=hash;
+				if(res.length>20){
+					this.elem.result.attr({'title':res});
 				}
-				else{ 
-					rpn=RPN(input.expression);
-					//console.log(rpn);
-					res=''+evaluate( rpn );
-					input.elem.result.setText( (res.length>3) ? addCommas(res) : res);
-					
-					if(res.length>20){
-						input.elem.result.elem.attr({'title':res});
-					}
-				}
-			}	
-	}
-	return function(val){
-		var len=this.expression.length,lastBlock;
-		if(len>0){
-			output(this);
-			hash=this.toString();
-			this.changeHash(hash);
-		} 
-		else if(val){
-			this.parser(val);
-			len=this.expression.length;
-			if(len>0){
-				output(this);
 			}
 		}
 	}
-}();
+};
 INPUT.prototype.charCount=function(){
 	var expr=this.expression,
 	i=expr.length,
@@ -555,7 +518,7 @@ INPUT.prototype.charCount=function(){
 	return count;
 };
 INPUT.prototype.parser=function(){
-	var numSet='01234567890',
+	var numSet='01234567890.',
 	signSet='+-/*^',
 	brktSet='()',
 	dot='.',
@@ -579,9 +542,6 @@ INPUT.prototype.parser=function(){
 			ch=expr.charAt(i);
 			if(isNum(ch)){
 				this.addDigit(ch);
-			}
-			else if(isDot(ch)){
-				this.addDot();
 			} 
 			else if(isSign(ch)){
 				this.addSign(ch);
@@ -590,6 +550,7 @@ INPUT.prototype.parser=function(){
 				this[type+'Bkt']();
 			}
 		}
+		this.result();
 	}
 
 }();
@@ -636,6 +597,7 @@ Calculator.prototype.init=function(){
 	elem.result=scene.div({'id':'result'}).$;
 	this.keyboard=new Keyboard();
 	this.input=new INPUT(elem);
+	this.input.parser(location.hash);
 	this.insertButtons();
 };
 
