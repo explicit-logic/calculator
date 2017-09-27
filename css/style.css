@@ -2,15 +2,12 @@ a {
   text-decoration: none;
   color: #DD6C4F;
 }
-
 a:hover {
   text-decoration:underline;
 }
-
 a:focus { 
   outline: none;
 }
-
 .button{
 	background-color:"#ddd";
 }
@@ -129,6 +126,20 @@ a:focus {
 	content:'=';
 	position: absolute;
     left: 0px;
+    top:20%;
+}
+#result.compute:before{
+  content:url('/imgs/ajax-loader.gif');
+  position: absolute;
+    left: 0px;
+    top:6px;
+}
+#result.error{
+	font-family: Verdana;
+    font-size: 14px;
+    color: #E91E63;
+    border-top: #ddd 1px solid;
+    text-align:left; 
 }
 .vertical.buttons{
 	position: absolute;

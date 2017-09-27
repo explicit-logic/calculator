@@ -1,5 +1,7 @@
 (function(){
 
+BigNumber.config({ POW_PRECISION: 100 });
+
 var Buttons=function(name,actions,container,insert,run,keys){
 	this.name=name;
 	this.actions=actions;
@@ -187,34 +189,6 @@ function RPN(expression){
 // 	}
 // }();
 
-var evaluate=function(){
-	var operators = {
-	    '+': function(x, y){return (x.plus(y));},
-	    '-': function(x, y){return (x ? x.minus(y) : y.times(-1));},
-	    '*': function(x, y){return (x.times(y));},
-	    '/': function(x, y){return ( x.dividedBy(y) );},
-	    '^': function(x, y){return x.toPower(y);}
-	};
-
-	return function(expr){
-	    var stack = [];
-	    var k=0;
-	    
-	    expr.forEach(function(token){
-	        if (token in operators) {
-	            var y=stack.pop(), x= stack.pop();
-	            stack.push(
-	            	new BigNumber( operators[token](x, y) )
-	            	);
-	        }
-	        else {
-	            stack.push(new BigNumber(token));
-	        }
-	    });
-	    return stack.pop();
-	}
-}();
-
 var Keyboard=function(){
 	this._enabled=true;
 	this.keys={};
@@ -262,11 +236,120 @@ Keyboard.prototype.isEnabled=function(){
 Keyboard.prototype.detach=function(){
 	this.init.off();
 };
+var Trigger=function(name){
+	this.name=name;
+	this.once=[];
+	this.repeat=[];	
+	return this;
+};
+Trigger.prototype.fire=function(){
+	var repeat=this.repeat,
+	once=this.once,
+	r=repeat.length,
+	o=once.length;
+	for(;o--;){
+		once[o]();
+	}
+	for(;r--;){
+		repeat[r]();
+	}
+	this.once=[];
+};
+Trigger.prototype.freeze=function(){
+	var clone=new Trigger(this.name);
+	clone.repeat=this.repeat.slice(0);
+	clone.once=this.once.slice(0);
+	this.once=[];
+	return clone;
+}
+Trigger.prototype.run=function(action){
+	this.repeat.push(action);
+	return this;
+};
+Trigger.prototype.runOnce=function(action){
+	this.once.push(action);
+	return this;
+};
+Trigger.prototype.removeAction=function(action){
+	var repeat=this.repeat,
+	once=this.once,
+	newRepeat=[],
+	newOnce=[],
+	r=repeat.length,
+	o=once.length;
+	for(;r--;){
+		if(repeat[r]!=action){
+			newRepeat.push(repeat[r]);
+		}
+	}
+	this.repeat=newRepeat;
+	for(;o--;){
+		if(once[o]!=action){
+			newOnce.push(once[o]);
+		}
+	}
+	this.once=newOnce;
+};
+
+var Calculator=function(container){
+	this.container=container;
+	this.input=null;
+	this.panel={
+		top:null,
+		left:null,
+		right:null,
+		bottom:null
+	};
+	this.keyboard=null;
+	this.init();
+	return this;
+}
+Calculator.prototype.init=function(){
+	var pos,
+		panel=this.panel,
+		container=this.container,
+		scene,
+		elem={
+			exprsn:null,
+			result:null
+		};
+	for(pos in panel){
+		if(panel.hasOwnProperty(pos)){
+			panel[pos]=container.div({'class':'tools '+pos+'-panel'}).$;
+		}
+	}
+	scene=container.div({'class':'expression-scene'}).$;
+	elem.exprsn=scene.div({'class':'wrapper expression'}).$
+						.div({'id':'expression'}).$;
+	elem.result=scene.div({'id':'result'}).$;
+	this.keyboard=new Keyboard();
+	this.input=new INPUT(elem);
+	this.insertButtons();
+};
+Calculator.triggers=[
+	new Trigger('pressButton')
+];
+
+Calculator.addTrigger=function(name){
+	var trigger=new Trigger(name);
+	this.triggers.push(trigger);
+	return trigger;
+};
+Calculator.getTrigger=function(name){
+	var triggers=this.triggers, i=triggers.length;
+	for(;i--;){
+		if(triggers[i].name==name){
+			return triggers[i];
+		}
+	}
+}
+
 
 var INPUT=function(elem){
 	this.nPthes=0;
 	this.expression=[];
 	this.elem=elem;
+	this.status='';
 	this.init();
 };
 INPUT.prototype.maxLen=13;
@@ -289,6 +372,7 @@ INPUT.prototype.init=function(){
 		e.preventDefault ? e.preventDefault() : (e.returnValue = false);
 	});
 	input.changeHash(location.hash);
+	this.status='ready';
 	on(window,'hashchange',function(){
 		input.changeHash(location.hash);
 	});
@@ -479,13 +563,13 @@ INPUT.prototype.removeById=function(id){
 };
 INPUT.prototype.clearRes=function(){
 	this.elem.result.empty();
-	this.elem.result.attr({'title':''});
+	this.elem.result.attr({'title':'','class':''});
 };
 INPUT.prototype.reset=function(){
 	this.expression=[];
 	this.nPthes=0;
 	this.elem.exprsn.empty();
-	this.clearRes();
+	//this.clearRes();
 };
 INPUT.prototype.clear=function(){
 	this.reset();
@@ -501,46 +585,148 @@ INPUT.prototype.backspace=function(){
 		else{
 			this.removeLast();
 		}
-		if(this.elem.result.node.textContent!==''){
-			this.clearRes();
-		}
+		// if(this.elem.result.node.textContent!==''){
+		// 	this.clearRes();
+		// }
 	} 
 	else{
 		this.elem.result.node.textContent='';
 	}
 };
+var MyWorker=function(url,onmessage,onerror){
+	this.url=url;
+	this.isReady=
+	this.worker=null;
+	this.onmessage=onmessage;
+	this.onerror=onerror;
+	this.init();
+};
+MyWorker.prototype.init=function(){
+	var myworker=this;
+	this.isReady=true;
+	this.worker=new Worker(this.url);
+	this.worker.onmessage=function(e){
+		myworker.onmessage(e);
+		myworker.isReady=true;
+	};
+	this.worker.onerror=this.onerror;
+}
+MyWorker.prototype.postMessage=function(mes){
+	this.isReady=false;
+	this.worker.postMessage(mes);
+};
+MyWorker.prototype.terminate=function(){
+	this.worker.terminate();
+};
+MyWorker.prototype.reset=function(){
+	this.terminate();
+	this.init();
+};
+
 INPUT.prototype.result=function(){
-	var output=function(input){
+	var 
+	trigger=Calculator.getTrigger('pressButton'),
+	insNum=function(elem,val){
+		elem.setText( (val.length>3) ? addCommas(val) : val);
+			if(val.length>20){
+				elem.attr({'title':val});
+			}
+	},
+	insError=function(elem,err){
+		elem.attr({'class':'error'});
+		elem.setText(err.message);
+	},
+	sync=function(){
+		var operators = {
+		    '+': function(x, y){return (x.plus(y));},
+		    '-': function(x, y){return (x ? x.minus(y) : y.times(-1));},
+		    '*': function(x, y){return (x.times(y));},
+		    '/': function(x, y){return ( x.dividedBy(y) );},
+		    '^': function(x, y){return x.toPower(y);}
+		};
+
+		return function(expr,elem){
+		    var stack = [],
+		     k=0;
+		    
+		    expr.forEach(function(token){
+		        if (token in operators) {
+		            var y=stack.pop(), x= stack.pop(),
+		            compute;
+		            try{
+		            	compute=operators[token](x, y);
+		            }
+		            catch(err){
+		            	insError(elem.result,err);
+		            }
+		            stack.push(
+		            	new BigNumber( compute )
+		            	);
+		        }
+		        else {
+		            stack.push(new BigNumber(token));
+		        }
+		    });
+		    insNum(elem.result,''+stack.pop());
+		    //return stack.pop();
+		}
+	};
+	var async=function(){
+		var worker,elem;
+		worker=new MyWorker('js/worker.js',
+			function(e){
+				insNum(elem.result,e.data);
+				elem.result.attr({'class':''});
+			},
+			function(err){
+				insError(elem.result,err);
+			}
+		);
+		return function(expr,el){
+			var offset;
+			elem=el;
+			elem.result.setText('Computing...');
+			elem.result.attr({'class':'compute'});
+			worker.postMessage(expr);
+			trigger.runOnce(function(){
+				if(!worker.isReady){
+					worker.reset();
+				}
+			});
+		}
+	};
+	var evaluate=(window.Worker) ? async() : sync();
+	//var evaluate=sync();
+
+	var run=function(input){
 		var lastBlock=input.expression[input.expression.length-1],
 			rpn,res;
 			if(lastBlock.type!='sign'){
 				if(input.nPthes>0){
-					alert('The parenthesis are unbalanced.\n Check your expression again!')
+					insError(input.elem.result,
+						new Error('The parenthesis are unbalanced.\n Check your expression again!'));
 				}
 				else{ 
 					rpn=RPN(input.expression);
 					//console.log(rpn);
-					res=''+evaluate( rpn );
-					input.elem.result.setText( (res.length>3) ? addCommas(res) : res);
-					
-					if(res.length>20){
-						input.elem.result.elem.attr({'title':res});
-					}
+					evaluate( rpn, input.elem);
 				}
+				trigger.runOnce(function(){
+					input.clearRes();
+				});
 			}	
 	}
 	return function(val){
-		var len=this.expression.length,lastBlock;
+		var len=this.expression.length;
 		if(len>0){
-			output(this);
-			hash=this.toString();
-			this.changeHash(hash);
+			run(this);
+			this.changeHash(this.toString());
 		} 
 		else if(val){
 			this.parser(val);
 			len=this.expression.length;
 			if(len>0){
-				output(this);
+				run(this);
 			}
 		}
 	}
@@ -603,41 +789,6 @@ INPUT.prototype.toString=function(){
 	return out;
 };
 
-var Calculator=function(container){
-	this.container=container;
-	this.input=null;
-	this.panel={
-		top:null,
-		left:null,
-		right:null,
-		bottom:null
-	};
-	this.keyboard=null;
-	this.init();
-	return this;
-}
-Calculator.prototype.init=function(){
-	var pos,
-		panel=this.panel,
-		container=this.container,
-		scene,
-		elem={
-			exprsn:null,
-			result:null
-		};
-	for(pos in panel){
-		if(panel.hasOwnProperty(pos)){
-			panel[pos]=container.div({'class':'tools '+pos+'-panel'}).$;
-		}
-	}
-	scene=container.div({'class':'expression-scene'}).$;
-	elem.exprsn=scene.div({'class':'wrapper expression'}).$
-						.div({'id':'expression'}).$;
-	elem.result=scene.div({'id':'result'}).$;
-	this.keyboard=new Keyboard();
-	this.input=new INPUT(elem);
-	this.insertButtons();
-};
 
 //var rLastPthes=/[\(\)]\s*$/;
 //var rLastNumber=/(\d+)\s*$/;
@@ -684,7 +835,6 @@ Calculator.prototype.buttons=[
 	function(action){
 		return this.container.a({'href':'#','class':'button round gray','text':action}).$;
 	},function(){
-
 		var num, dot, clear;
 
 		clear=function(input){
@@ -695,16 +845,16 @@ Calculator.prototype.buttons=[
 
 		num=function(digit){
 			this.addDigit(digit);
-			clear(this);
+			//clear(this);
 		};
 
 		dot=function(){
 			var lastBlock;
 			lastBlock=this.expression[this.expression.length-1];
 			this.addDot();
-			if(lastBlock){
-				clear(this);
-			}
+			// if(lastBlock){
+			// 	clear(this);
+			// }
 		};
 
 		return [num,dot,num,num,num, num,num,num, num,num,num];
@@ -759,8 +909,8 @@ Calculator.prototype.insertButtons=function(){
 	key,
 	ctrl, k,
 	i=0,j,len=buttons.length,
-	acts;
-
+	acts, trigger;
+	trigger=Calculator.getTrigger('pressButton');
 	for(;i<len;i++){
 		button=buttons[i];
 		container=null;
@@ -836,7 +986,9 @@ Calculator.prototype.insertButtons=function(){
 			if(fn=eachRun(j)){
 				elem.click(function(run,action){
 				return function(e){
+					var ftrigger=trigger.freeze();
 					run.call(calc.input,action);
+					ftrigger.fire();
 					//event.preventDefault ? event.preventDefault() : (event.returnValue = false);
 					if(e.preventDefault) {e.preventDefault();}
 					else{ e.returnValue = false;}
@@ -846,7 +998,9 @@ Calculator.prototype.insertButtons=function(){
 					if(key=eachKey(j)){
 						ctrl=function(run,action){
 							return function(){
+								var ftrigger=trigger.freeze();
 								run.call(calc.input,action);
+								ftrigger.fire();
 							}
 						}(fn,button.actions[j]);
 						if('array'===type(key)){

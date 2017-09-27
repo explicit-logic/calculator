@@ -202,6 +202,15 @@ Tag.fn.attr=function(obj){
 	}
 	return this;
 };
+Tag.fn.addClass=function(name){
+	var node=this.node;
+	if(node.classList){
+		node.classList.add(name);
+	}
+	else{
+		node.className+=' '+name;
+	}
+};
 Tag.fn.offset=function(){
 	var node=this.node, 
 	rect = node.getBoundingClientRect(), 
