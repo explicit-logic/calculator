@@ -418,7 +418,9 @@ INPUT.prototype.closeBkt=function(){
 		lastBlock=this.expression[len-1];
 		if(lastBlock){
 			type=lastBlock.type;
-			if(type!='sign' && (type!='number' || lastBlock.val!='-')){
+			if(type!='sign' 
+				&& (type!='bracket'|| lastBlock.val!='(')  
+				&& (type!='number' || lastBlock.val!='-')){
 				this.addBlock(new Bracket(')'));
 				this.nPthes--;
 			}
