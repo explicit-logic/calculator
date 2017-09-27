@@ -701,8 +701,9 @@ INPUT.prototype.result=function(){
 
 	var run=function(input){
 		var lastBlock=input.expression[input.expression.length-1],
-			rpn,res;
+			rpn,res,content;
 			if(lastBlock.type!='sign'){
+				content=input.elem.result.textContent;
 				if(input.nPthes>0){
 					insError(input.elem.result,
 						new Error('The parenthesis are unbalanced.\n Check your expression again!'));
@@ -712,6 +713,7 @@ INPUT.prototype.result=function(){
 					//console.log(rpn);
 					evaluate( rpn, input.elem);
 				}
+				
 				trigger.runOnce(function(){
 					input.clearRes();
 				});
@@ -989,7 +991,9 @@ Calculator.prototype.insertButtons=function(){
 				return function(e){
 					var ftrigger=trigger.freeze();
 					run.call(calc.input,action);
-					ftrigger.fire();
+					if(action!='='){
+						ftrigger.fire();
+					}
 					//event.preventDefault ? event.preventDefault() : (event.returnValue = false);
 					if(e.preventDefault) {e.preventDefault();}
 					else{ e.returnValue = false;}
@@ -1001,7 +1005,9 @@ Calculator.prototype.insertButtons=function(){
 							return function(){
 								var ftrigger=trigger.freeze();
 								run.call(calc.input,action);
-								ftrigger.fire();
+								if(action!='='){
+									ftrigger.fire();
+								}
 							}
 						}(fn,button.actions[j]);
 						if('array'===type(key)){
