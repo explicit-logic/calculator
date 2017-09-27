@@ -627,9 +627,10 @@ INPUT.prototype.result=function(){
 	var 
 	trigger=Calculator.getTrigger('pressButton'),
 	insNum=function(elem,val){
-		elem.setText( (val.length>3) ? addCommas(val) : val);
-			if(val.length>20){
-				elem.attr({'title':val});
+		var prettynum=(val.length>3) ? addCommas(val) : val;
+		elem.setText( prettynum );
+			if(val.length>15){
+				elem.attr({'title': prettynum});
 			}
 	},
 	insError=function(elem,err){
