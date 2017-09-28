@@ -1,5 +1,5 @@
 importScripts('bignumber.min.js');
-BigNumber.config({ POW_PRECISION: 100 });
+BigNumber.config({ POW_PRECISION: 100, EXPONENTIAL_AT: [-7, 20], DECIMAL_PLACES: 35, ROUNDING_MODE: 4  });
 
 var evaluate=function(){
 		var operators = {

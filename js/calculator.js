@@ -1,6 +1,6 @@
 (function(){
 
-BigNumber.config({ POW_PRECISION: 100 });
+BigNumber.config({ POW_PRECISION: 100, EXPONENTIAL_AT: [-7, 20], DECIMAL_PLACES: 35, ROUNDING_MODE: 4  });
 
 var Buttons=function(name,actions,container,insert,run,keys){
 	this.name=name;
@@ -698,8 +698,8 @@ INPUT.prototype.result=function(){
 			});
 		}
 	};
-	var evaluate=(window.Worker) ? async() : sync();
-	//var evaluate=sync();
+	//var evaluate=(window.Worker) ? async() : sync();
+	var evaluate=sync();
 
 	var run=function(input){
 		var lastBlock=input.expression[input.expression.length-1],
@@ -712,7 +712,7 @@ INPUT.prototype.result=function(){
 				}
 				else{ 
 					rpn=RPN(input.expression);
-					//console.log(rpn);
+					console.log(rpn);
 					evaluate( rpn, input.elem);
 				}
 				
