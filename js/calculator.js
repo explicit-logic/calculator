@@ -1,6 +1,6 @@
 (function(){
 
-BigNumber.config({ POW_PRECISION: 100, EXPONENTIAL_AT: [-7, 20], DECIMAL_PLACES: 35, ROUNDING_MODE: 4  });
+BigNumber.config({ POW_PRECISION: 100, EXPONENTIAL_AT: [-13, 120], DECIMAL_PLACES: 35, ROUNDING_MODE: 4  });
 
 var Buttons=function(name,actions,container,insert,run,keys){
 	this.name=name;
@@ -688,8 +688,12 @@ INPUT.prototype.result=function(){
 		return function(expr,el){
 			var offset;
 			elem=el;
-			elem.result.setText('Computing...');
-			elem.result.attr({'class':'compute'});
+			setTimeout(function(){
+				if(!worker.isReady){
+					elem.result.setText('Computing...');
+					elem.result.attr({'class':'compute'});
+				}
+			},1000);
 			worker.postMessage(expr);
 			trigger.runOnce(function(){
 				if(!worker.isReady){
