@@ -611,7 +611,10 @@ MyWorker.prototype.init=function(){
 		myworker.onmessage(e);
 		myworker.isReady=true;
 	};
-	this.worker.onerror=this.onerror;
+	this.worker.onerror=function(e){
+		myworker.onerror(e);
+		myworker.isReady=true;
+	};
 }
 MyWorker.prototype.postMessage=function(mes){
 	this.isReady=false;
