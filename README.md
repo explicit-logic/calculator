@@ -1,1 +1,1 @@
-# maglifter.github.io
+# Simple pure JS Calculator
