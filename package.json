@@ -1,0 +1,36 @@
+{
+  "name": "calculator",
+  "version": "0.0.1",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack-dev-server --mode development",
+    "build": "webpack"
+  },
+  "jshintConfig": {
+    "esversion": 9,
+    "globals": {
+      "$": true
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maglifter/calculator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maglifter/calculator/issues"
+  },
+  "homepage": "https://github.com/maglifter/calculator#readme",
+  "devDependencies": {
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.6.4",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-server": "^3.9.0",
+    "webpack-merge": "^4.2.2"
+  }
+}
