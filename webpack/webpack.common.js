@@ -1,13 +1,16 @@
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
-  entry: './src/scripts/index.ts',
+  entry: {
+    app: './src/scripts/index.ts'
+  },
   devtool: 'inline-source-map',
   output: {
-      filename: 'app.js',
-      path: path.resolve(__dirname, 'dist', 'scripts')
+      filename: '[name].js',
+      path: path.resolve(__dirname, '..', 'dist'),
   },
   module: {
       rules: [
@@ -16,6 +19,13 @@ module.exports = {
               loader: 'ts-loader',
               exclude: /node_modules/,
           },
+          {
+            test:/\.s?css$/,
+            use: ExtractTextPlugin.extract({
+              fallback:'style-loader',
+              use:['css-loader','sass-loader'],
+            })
+         }
       ]
   },
   resolve: {
@@ -23,8 +33,12 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new ExtractTextPlugin({filename:'app.css'}),
     new HtmlWebpackPlugin({
       title: 'Production',
+      template: 'src/index.html',
+      filename: 'index.html',
+      hash: true,
     }),
   ],
 };
