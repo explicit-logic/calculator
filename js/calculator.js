@@ -12,7 +12,7 @@ var Buttons=function(name,actions,container,insert,run,keys){
 	return this;
 },
 buttons=function(name,actions,container,insert,run,keys){
-	return new Buttons(name,actions,container,insert,run,keys);	
+	return new Buttons(name,actions,container,insert,run,keys);
 },
 type=lib('>type');
 lib('event');
@@ -175,7 +175,7 @@ function RPN(expression){
 
 // 	return function(expr){
 // 	    var stack = [];
-	    
+
 // 	    expr.forEach(function(token){
 // 	        if (token in operators) {
 // 	            var y=stack.pop(), x= stack.pop();
@@ -239,7 +239,7 @@ Keyboard.prototype.detach=function(){
 var Trigger=function(name){
 	this.name=name;
 	this.once=[];
-	this.repeat=[];	
+	this.repeat=[];
 	return this;
 };
 Trigger.prototype.fire=function(){
@@ -361,7 +361,7 @@ INPUT.prototype.init=function(){
 		return;
 		if(elem.className==='number'){
 			index=input.removeBlock(elem);
-			
+
 			if(index>0){
 				prevBlock=this.expression[index-1];
 				if(prevBlock.val!='('){
@@ -393,14 +393,14 @@ INPUT.prototype.changeHash=function(){
 					location.hash=hash;
 				}
 			}
-		} 
+		}
 	}
 }();
 INPUT.prototype.openBkt=function(){
 	var lastBlock,len;
 		len=this.expression.length;
 		lastBlock=this.expression[len-1];
-	
+
 	if(!lastBlock || lastBlock.type=='sign' || (lastBlock.type=='bracket' && lastBlock.val=='(')){
 		this.addBlock(new Bracket('('));
 		this.nPthes++;
@@ -418,8 +418,8 @@ INPUT.prototype.closeBkt=function(){
 		lastBlock=this.expression[len-1];
 		if(lastBlock){
 			type=lastBlock.type;
-			if(type!='sign' 
-				&& (type!='bracket'|| lastBlock.val!='(')  
+			if(type!='sign'
+				&& (type!='bracket'|| lastBlock.val!='(')
 				&& (type!='number' || lastBlock.val!='-')){
 				this.addBlock(new Bracket(')'));
 				this.nPthes--;
@@ -442,7 +442,7 @@ INPUT.prototype.addFirst=function(block){
 INPUT.prototype.addDigit=function(digit){
 	var len,val,
 	lastBlock;
-	
+
 	len=this.expression.length;
 	lastBlock=this.expression[len-1];
 
@@ -590,7 +590,7 @@ INPUT.prototype.backspace=function(){
 		// if(this.elem.result.node.textContent!==''){
 		// 	this.clearRes();
 		// }
-	} 
+	}
 	else{
 		this.elem.result.node.textContent='';
 	}
@@ -629,7 +629,7 @@ MyWorker.prototype.reset=function(){
 };
 
 INPUT.prototype.result=function(){
-	var 
+	var
 	trigger=Calculator.getTrigger('pressButton'),
 	insNum=function(elem,val){
 		var prettynum=(val.length>3) ? addCommas(val) : val;
@@ -654,7 +654,7 @@ INPUT.prototype.result=function(){
 		return function(expr,elem){
 		    var stack = [],
 		     k=0;
-		    
+
 		    expr.forEach(function(token){
 		        if (token in operators) {
 		            var y=stack.pop(), x= stack.pop(),
@@ -705,8 +705,8 @@ INPUT.prototype.result=function(){
 			});
 		}
 	};
-	var evaluate=(window.Worker) ? async() : sync();
-	//var evaluate=sync();
+	// var evaluate=(window.Worker) ? async() : sync();
+	var evaluate=sync();
 
 	var run=function(input){
 		var lastBlock=input.expression[input.expression.length-1],
@@ -717,23 +717,23 @@ INPUT.prototype.result=function(){
 					insError(input.elem.result,
 						new Error('The parenthesis are unbalanced.\n Check your expression again!'));
 				}
-				else{ 
+				else{
 					rpn=RPN(input.expression);
 					//console.log(rpn);
 					evaluate( rpn, input.elem);
 				}
-				
+
 				trigger.runOnce(function(){
 					input.clearRes();
 				});
-			}	
+			}
 	}
 	return function(val){
 		var len=this.expression.length;
 		if(len>0){
 			run(this);
 			this.changeHash(this.toString());
-		} 
+		}
 		else if(val){
 			this.parser(val);
 			len=this.expression.length;
@@ -780,7 +780,7 @@ INPUT.prototype.parser=function(){
 			}
 			else if(isDot(ch)){
 				this.addDot();
-			} 
+			}
 			else if(isSign(ch)){
 				this.addSign(ch);
 			}
@@ -958,7 +958,7 @@ Calculator.prototype.insertButtons=function(){
 		else{
 			continue;
 		}
-		
+
 		if('array'===type(button.insert)){
 			eachInsert=function(insrs){
 				return function(action,index){
@@ -1028,7 +1028,7 @@ Calculator.prototype.insertButtons=function(){
 						else{
 							this.keyboard.addAction(key,ctrl);
 						}
-					}	
+					}
 				}
 			}
 		}
