@@ -18,6 +18,9 @@ module.exports = {
               test: /\.tsx?$/,
               loader: 'ts-loader',
               exclude: /node_modules/,
+              options: {
+                configFile: 'tsconfig.json'
+              }
           },
           {
             test:/\.s?css$/,
@@ -29,7 +32,12 @@ module.exports = {
          {
           test: /\.(gif|png|jpe?g|svg)$/i,
           use: [
-            'file-loader',
+            {
+              loader: 'file-loader',
+              options: {
+                outputPath: 'images',
+              },
+            },
             {
               loader: 'image-webpack-loader',
               options: {
@@ -59,7 +67,7 @@ module.exports = {
       ]
   },
   resolve: {
-      extensions: [".tsx", ".ts", ".js"]
+      extensions: [".tsx", ".ts", ".js", '.scss', '.gif', '.png', '.jpg', '.jpeg', '.svg']
   },
   plugins: [
     new CleanWebpackPlugin(),
