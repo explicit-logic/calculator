@@ -1,7 +1,8 @@
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const devMode = process.env.NODE_ENV !== 'production';
 
 module.exports = {
   entry: {
@@ -24,10 +25,16 @@ module.exports = {
           },
           {
             test:/\.s?css$/,
-            use: ExtractTextPlugin.extract({
-              fallback:'style-loader',
-              use:['css-loader','sass-loader'],
-            })
+            use: [
+              {
+                loader: MiniCssExtractPlugin.loader,
+                options: {
+                  hmr: devMode,
+                },
+              },
+              'css-loader',
+              'sass-loader',
+            ],
          },
          {
           test: /\.(gif|png|jpe?g|svg)$/i,
@@ -71,7 +78,12 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new ExtractTextPlugin({filename:'app.css'}),
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // both options are optional
+      filename: devMode ? '[name].css' : '[name].[hash].css',
+      chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
+    }),
     new HtmlWebpackPlugin({
       title: 'Production',
       template: 'src/index.html',

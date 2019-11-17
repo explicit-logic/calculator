@@ -1,11 +1,2 @@
-@import 'themeColors';
-
-$theme-font:    verdana, sans-serif;
-
-body {
-  font: $theme-font;
-  background-color: $themeColor-Light;
-  h1, h2 {
-      color: $themeColor-Dark
-  }
-}
+@import "~normalize-scss/sass/normalize/import-now";
+@import 'calculator';
