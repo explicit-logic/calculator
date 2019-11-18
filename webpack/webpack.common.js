@@ -6,7 +6,7 @@ const devMode = process.env.NODE_ENV !== 'production';
 
 module.exports = {
   entry: {
-    app: './src/scripts/index.ts'
+    app: './src/index.ts'
   },
   devtool: 'inline-source-map',
   output: {

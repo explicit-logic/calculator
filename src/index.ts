@@ -1,5 +1,5 @@
-import './../styles/style.scss';
-import settingsImg from '../images/settings.svg';
+import './index.scss';
+import settingsImg from './images/settings.svg';
 
 export {};
 
