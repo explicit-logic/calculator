@@ -6,7 +6,7 @@ const devMode = process.env.NODE_ENV !== 'production';
 
 module.exports = {
   entry: {
-    app: './src/index.ts'
+    app: './src/index.tsx'
   },
   devtool: 'inline-source-map',
   output: {
@@ -22,6 +22,12 @@ module.exports = {
               options: {
                 configFile: 'tsconfig.json'
               }
+          },
+          // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+          {
+            enforce: "pre",
+            test: /\.js$/,
+            loader: "source-map-loader"
           },
           {
             test:/\.s?css$/,

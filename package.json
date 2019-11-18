@@ -26,6 +26,8 @@
   },
   "homepage": "https://github.com/maglifter/calculator#readme",
   "devDependencies": {
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.4",
     "autoprefixer": "^9.7.1",
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.2.0",
@@ -35,6 +37,7 @@
     "mini-css-extract-plugin": "^0.8.0",
     "node-sass": "^4.13.0",
     "sass-loader": "^8.0.0",
+    "source-map-loader": "^0.2.4",
     "style-loader": "^1.0.0",
     "ts-loader": "^6.2.1",
     "typescript": "^3.6.4",
@@ -45,6 +48,8 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "normalize-scss": "^7.0.1"
+    "normalize-scss": "^7.0.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
   }
 }
