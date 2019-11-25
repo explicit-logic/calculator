@@ -1,6 +1,6 @@
+import {BaseBlock as BaseBlockComponent} from './components/BaseBlock';
 
-
-abstract class Block {
+export abstract class BaseBlock {
 
   static counter: number = 0;
   protected _id: string;
@@ -18,5 +18,13 @@ abstract class Block {
 
   beforeClosedBracket(): boolean {
     return true;
+  }
+
+  className(): string {
+    return 'block';
+  }
+
+  component() {
+    return BaseBlockComponent;
   }
 }
