@@ -356,21 +356,6 @@ INPUT.prototype.maxLen=13;
 
 INPUT.prototype.init=function(){
 	var input=this;
-	this.elem.exprsn.click(function(e){
-		var elem=e.target,prevBlock;
-		return;
-		if(elem.className==='number'){
-			index=input.removeBlock(elem);
-
-			if(index>0){
-				prevBlock=this.expression[index-1];
-				if(prevBlock.val!='('){
-					input.removeById(prevBlock.id);
-				}
-			}
-		}
-		e.preventDefault ? e.preventDefault() : (e.returnValue = false);
-	});
 	input.changeHash(location.hash);
 	this.status='ready';
 	on(window,'hashchange',function(){
@@ -430,12 +415,6 @@ INPUT.prototype.closeBkt=function(){
 INPUT.prototype.addBlock=function(block){
 	this.expression.push(block);
 	this.elem.exprsn.span({'id':block.id,'class':block.type,
-				'text':block.format()});
-	return block;
-};
-INPUT.prototype.addFirst=function(block){
-	this.expression.unshift(block);
-	this.elem.exprsn.first().span({'id':block.id,'class':block.type,
 				'text':block.format()});
 	return block;
 };
