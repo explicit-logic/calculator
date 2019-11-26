@@ -1,9 +1,18 @@
 import * as React from "react";
 
-export interface CalculatorProps { compiler: string; framework: string; }
+import {Panel, Position} from './../panel/Panel';
 
-export class Calculator extends React.Component<CalculatorProps, {}> {
+export class Calculator extends React.Component {
+
   render() {
-      return <h1>Hello from {this.props.compiler} and {this.props.framework}!</h1>;
+      return (
+      <>
+      {
+        Object
+          .keys(Position)
+          .map(key => (<Panel key={key} position={Position[key]} />))
+      }
+      </>
+      );
   }
 }

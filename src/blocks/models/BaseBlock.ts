@@ -1,4 +1,4 @@
-import {BaseBlock as BaseBlockComponent} from './components/BaseBlock';
+import {BaseBlock as BaseBlockComponent} from '../components/BaseBlock';
 
 export abstract class BaseBlock {
 

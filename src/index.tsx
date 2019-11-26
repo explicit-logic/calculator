@@ -18,6 +18,6 @@ function imgCreate(src: string, alt?: string, title?: string) {
 // document.body.appendChild(imgCreate(settingsImg));
 
 ReactDOM.render(
-  <Calculator compiler="TypeScript" framework="React" />,
+  <Calculator />,
   document.getElementById("main")
 );
