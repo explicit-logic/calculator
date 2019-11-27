@@ -31,14 +31,14 @@
   },
   {
     "operations": ["C", "<="],
-    "position": "bottom left",
+    "position": ["bottom", "left"],
     "handlers": ["clear", "backspace"],
     "classes": ["rect magenta large", "rect gray"],
     "keys" : [27,8]
   },
   {
     "operation": "=",
-    "position": "bottom right",
+    "position": ["bottom", "right"],
     "class": "rect blue medium",
     "handler": "result",
     "key" : [13,187]
