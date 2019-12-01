@@ -1,11 +1,10 @@
 import * as React from "react";
 
-import * as config from './../config/buttons.json';
+import * as config from './../config';
 
 import {Panel, Position} from './../panel/Panel';
 import {Scene} from './../scene/Scene';
 
-console.log(config);
 export class Calculator extends React.Component {
 
   render() {
@@ -14,7 +13,7 @@ export class Calculator extends React.Component {
       {
         Object
           .keys(Position)
-          .map(key => (<Panel key={key} position={Position[key]} />))
+          .map(key => (<Panel key={key} position={Position[key]} config={config}/>))
       }
       <Scene />
       </div>

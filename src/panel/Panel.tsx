@@ -9,6 +9,7 @@ export enum Position {
 
 export interface PanelProps {
   position: Position;
+  config: object
 }
 
 export class Panel extends React.Component<PanelProps, {}> {
