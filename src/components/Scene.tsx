@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import {Expression} from './../expression/Expression';
-import {Result} from './../result/Result';
+import {Expression} from './Expression';
+import {Result} from './Result';
 
 export class Scene extends React.Component {
   render() {

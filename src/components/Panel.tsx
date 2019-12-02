@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Buttons, Direction} from './../buttons/Buttons';
+import {Buttons, Direction} from './Buttons';
 
 export enum Position {
   Top = 'top',

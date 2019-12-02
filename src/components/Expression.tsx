@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import {BaseBlock} from './../blocks/models/BaseBlock';
+import {BaseBlock} from '../models/BaseBlock';
 
 export interface ExpressionState {
   expression: BaseBlock[];

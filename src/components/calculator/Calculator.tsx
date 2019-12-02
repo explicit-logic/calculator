@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import * as config from './../config';
+import * as config from './../../config';
 
-import {Panel, Position} from './../panel/Panel';
-import {Scene} from './../scene/Scene';
+import {Panel, Position} from './../Panel';
+import {Scene} from './../Scene';
 
 export class Calculator extends React.Component {
 
