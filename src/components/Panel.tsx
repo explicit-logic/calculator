@@ -1,5 +1,6 @@
 import * as React from "react";
 import {Buttons, Direction} from './Buttons';
+import {ButtonsProvider} from './../libs/ButtonsProvider';
 
 export enum Position {
   Top = 'top',
@@ -10,7 +11,7 @@ export enum Position {
 
 export interface PanelProps {
   position: Position;
-  config: object
+  buttonsProvider: ButtonsProvider;
 }
 
 const PositionDirection = new Map<Position, Direction>([
@@ -24,7 +25,10 @@ export class Panel extends React.Component<PanelProps, {}> {
   render() {
     return (
     <div className={"tools "+this.props.position}>
-      <Buttons direction={PositionDirection.get(this.props.position)}/>
+      <Buttons
+        direction={PositionDirection.get(this.props.position)}
+        items={this.props.buttonsProvider.getButtonsByPosition(this.props.position)}
+        />
     </div>
     );
   }
