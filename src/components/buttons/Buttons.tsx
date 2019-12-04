@@ -1,9 +1,6 @@
 import * as React from "react";
 
-export enum Direction {
-  Horizontal = 'horizontal',
-  Vertical = 'vertical',
-}
+import {Direction} from '../../models/Direction';
 
 export interface ButtonsProps {
   direction: Direction;

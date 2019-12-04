@@ -1,17 +1,14 @@
 import * as React from "react";
-import {Buttons, Direction} from './Buttons';
-import {ButtonsProvider} from './../libs/ButtonsProvider';
+import {Buttons} from './buttons';
 
-export enum Position {
-  Top = 'top',
-  Left = 'left',
-  Right = 'right',
-  Bottom = 'bottom'
-}
+import {Position} from './../models/Position';
+import {Direction} from './../models/Direction';
+
+import {ButtonsFactory} from './buttons/ButtonsFactory';
 
 export interface PanelProps {
   position: Position;
-  buttonsProvider: ButtonsProvider;
+  buttonsFactory: ButtonsFactory;
 }
 
 const PositionDirection = new Map<Position, Direction>([
@@ -27,7 +24,7 @@ export class Panel extends React.Component<PanelProps, {}> {
     <div className={"tools "+this.props.position}>
       <Buttons
         direction={PositionDirection.get(this.props.position)}
-        items={this.props.buttonsProvider.getButtonsByPosition(this.props.position)}
+        items={this.props.buttonsFactory.getButtonsByPosition(this.props.position)}
         />
     </div>
     );

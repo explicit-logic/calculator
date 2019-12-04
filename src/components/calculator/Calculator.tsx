@@ -1,22 +1,22 @@
 import * as React from "react";
 
-import * as config from './../../config';
-
-import {Panel, Position} from './../Panel';
+import {Panel} from './../Panel';
 import {Scene} from './../Scene';
 
-import {ButtonsProvider} from './../../libs/ButtonsProvider';
+import {Position} from './../../models/Position';
+
+import {ButtonsFactory} from '../buttons/ButtonsFactory';
 
 export class Calculator extends React.Component {
 
-  buttonsProvider: ButtonsProvider;
+  buttonsFactory: ButtonsFactory;
 
   constructor(props) {
     super(props);
 
-    let buttonsProvider = new ButtonsProvider;
-    buttonsProvider.loadConfig(config.buttons);
-    this.buttonsProvider = buttonsProvider;
+    let buttonsFactory = new ButtonsFactory;
+    buttonsFactory.init();
+    this.buttonsFactory = buttonsFactory;
   }
 
   render() {
@@ -25,7 +25,7 @@ export class Calculator extends React.Component {
       {
         Object
           .keys(Position)
-          .map(key => (<Panel key={key} position={Position[key]} buttonsProvider={this.buttonsProvider}/>))
+          .map(key => (<Panel key={key} position={Position[key]} buttonsFactory={this.buttonsFactory}/>))
       }
       <Scene />
       </div>

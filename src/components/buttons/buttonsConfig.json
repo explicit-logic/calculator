@@ -32,7 +32,7 @@
   {
     "operations": ["C", "<="],
     "position": ["bottom", "left"],
-    "handlers": ["clear", "backspace"],
+    "actions": ["clear", "backspace"],
     "classes": ["rect magenta large", "rect gray"],
     "keys" : [27,8]
   },
