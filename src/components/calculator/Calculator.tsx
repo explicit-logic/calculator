@@ -16,6 +16,7 @@ export class Calculator extends React.Component {
 
     let buttonsFactory = new ButtonsFactory;
     buttonsFactory.init();
+
     this.buttonsFactory = buttonsFactory;
   }
 
