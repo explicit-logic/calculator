@@ -6,12 +6,25 @@ export type OperationType = string | number;
 export type KeyType = number | number[];
 
 export class Button {
+  private _id: string;
   private _action: Action;
   private _alignment?: Alignment;
   private _className?: string;
   private _direction?: Direction;
   private _key?: KeyType;
+  private _label: string;
   private _operation: OperationType;
+
+  static counter = 1;
+
+  constructor() {
+    this._id = 'btn_' + Button.counter
+    Button.counter++;
+  }
+
+  get id(): string {
+    return this._id;
+  }
 
   get action(): Action {
     return this._action;
@@ -46,6 +59,13 @@ export class Button {
   }
   set key(key: KeyType) {
     this._key = key;
+  }
+
+  get label(): string {
+    return this._label || this._operation.toString();
+  }
+  set label(label: string) {
+    this._label = label;
   }
 
   get operation(): OperationType {

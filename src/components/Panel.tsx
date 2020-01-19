@@ -1,14 +1,14 @@
 import * as React from "react";
-import {Buttons} from './buttons';
 
-import {Position} from './../models/Position';
+import {Button as ButtonModel} from '../models/Button';
+import {Button} from './Button';
 import {Direction} from './../models/Direction';
 
-import {ButtonsFactory} from './buttons/ButtonsFactory';
+import {Position} from './../models/Position';
 
 export interface PanelProps {
   position: Position;
-  buttonsFactory: ButtonsFactory;
+  alignmentButtons: {[key: string]: ButtonModel[]};
 }
 
 const PositionDirection = new Map<Position, Direction>([
@@ -18,15 +18,37 @@ const PositionDirection = new Map<Position, Direction>([
   [Position.Bottom, Direction.Horizontal],
 ]);
 
-export class Panel extends React.Component<PanelProps, {}> {
-  render() {
-    return (
-    <div className={"tools "+this.props.position}>
-      <Buttons
-        direction={PositionDirection.get(this.props.position)}
-        items={this.props.buttonsFactory.getButtonsByPosition(this.props.position)}
-        />
+export const Panel = (props: PanelProps) => {
+  const alignmentButtons = props.alignmentButtons;
+  const direction = PositionDirection.get(props.position);
+
+  let alignmentKeys = alignmentButtons ? Object.keys(alignmentButtons) : [];
+  const alignmentCount = alignmentKeys.length;
+
+  return (
+    <div className={`tools ${props.position}-panel`}>
+      {
+        alignmentKeys.map(alignment => {
+          let alignmentClass: string = 'buttons';
+          const buttonModels = alignmentButtons[alignment];
+
+          if (alignmentCount > 1) {
+            alignmentClass = `buttons-${alignment}`;
+          }
+
+          return (
+          <div key={alignment} className={direction + " " + alignmentClass}>
+            {
+              buttonModels.map((buttonModel) => {
+                return <Button key={buttonModel.id} model={buttonModel} />
+              })
+            }
+          </div>
+          );
+        })
+      }
     </div>
     );
-  }
 }
+
+

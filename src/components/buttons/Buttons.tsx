@@ -1,12 +1,13 @@
 import * as React from "react";
 
-import {Direction} from '../../models/Direction';
+import {Button} from '../../models/Button';
 
 export interface ButtonsProps {
-  direction: Direction;
-  items: object[];
+  items: Button[];
 };
 
 export const Buttons = (props: ButtonsProps) => {
-  return (<div className={props.direction+" buttons"}></div>);
+
+
+  return (<div></div>);
 }

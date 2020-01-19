@@ -26,7 +26,11 @@ export class Calculator extends React.Component {
       {
         Object
           .keys(Position)
-          .map(key => (<Panel key={key} position={Position[key]} buttonsFactory={this.buttonsFactory}/>))
+          .map(key => (<Panel
+            key={key}
+            position={Position[key]}
+            alignmentButtons={this.buttonsFactory.getButtonsByPosition(Position[key])}
+            />))
       }
       <Scene />
       </div>

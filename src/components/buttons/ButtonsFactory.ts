@@ -15,18 +15,24 @@ enum SingularAttribute {
   Operation = 'operation',
   Action = 'action',
   Key = 'key',
+  Label = 'label',
+  ClassName = 'className',
 };
 
 enum PluralAttribute {
   Operations = 'operations',
   Actions = 'actions',
   Keys = 'keys',
+  Labels = 'labels',
+  ClassNames = 'classNames',
 };
 
 const ConfigItemAttributes = new Map<SingularAttribute, PluralAttribute>([
   [SingularAttribute.Operation, PluralAttribute.Operations],
   [SingularAttribute.Action, PluralAttribute.Actions],
   [SingularAttribute.Key, PluralAttribute.Keys],
+  [SingularAttribute.Label, PluralAttribute.Labels],
+  [SingularAttribute.ClassName, PluralAttribute.ClassNames],
 ]);
 
 type ConfigPositionType = Position | [Position, Alignment];
@@ -37,6 +43,8 @@ interface BaseConfigItem {
   [PluralAttribute.Actions]?: Action[];
   [SingularAttribute.Key]?: KeyType;
   [PluralAttribute.Keys]?: KeyType[];
+  [SingularAttribute.Label]?: string;
+  [PluralAttribute.Labels]?: string[];
 }
 
 interface OperationConfigItem extends BaseConfigItem {
@@ -50,7 +58,7 @@ interface OperationsConfigItem extends BaseConfigItem {
 type ConfigItem = OperationConfigItem | OperationsConfigItem;
 
 export class ButtonsFactory {
-  buttonsTree: object;
+  buttonsTree: { [key: string]: {[key:string]: Button[]} };
 
   constructor() {
     this.buttonsTree = {};
@@ -116,7 +124,7 @@ export class ButtonsFactory {
     }
 
     for (let i = 0; i < buttonsCount; i++) {
-      const button: Button = new Button;
+      let button: Button = new Button;
 
       for (const [singularAttribute, pluralAttribute] of ConfigItemAttributes.entries()) {
         button[singularAttribute] = itemValues[pluralAttribute][i] ?

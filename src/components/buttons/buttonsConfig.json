@@ -30,16 +30,17 @@
     "keys" : [[49,97],[50,98],[51,99],[52,100],[53,101],[54,102],[55,103],[56,104],[57,105]]
   },
   {
+    "labels": ["C", "←"],
     "operations": ["C", "<="],
     "position": ["bottom", "left"],
     "actions": ["clear", "backspace"],
-    "classes": ["rect magenta large", "rect gray"],
+    "classNames": ["button rect magenta large", "button rect gray"],
     "keys" : [27,8]
   },
   {
     "operation": "=",
     "position": ["bottom", "right"],
-    "class": "rect blue medium",
+    "className": "button rect blue medium",
     "action": "result",
     "key" : [13,187]
   }
