@@ -1,14 +1,14 @@
 import * as React from "react";
 
-import {Button as ButtonModel} from '../models/Button';
-import {Button} from './Button';
-import {Direction} from './../models/Direction';
+import { Button as ButtonModel } from '../models/Button';
+import { Buttons } from './buttons';
+import { Direction } from './../models/Direction';
 
-import {Position} from './../models/Position';
+import { Position } from './../models/Position';
 
 export interface PanelProps {
   position: Position;
-  alignmentButtons: {[key: string]: ButtonModel[]};
+  alignmentButtons: { [key: string]: ButtonModel[] };
 }
 
 const PositionDirection = new Map<Position, Direction>([
@@ -37,18 +37,12 @@ export const Panel = (props: PanelProps) => {
           }
 
           return (
-          <div key={alignment} className={direction + " " + alignmentClass}>
-            {
-              buttonModels.map((buttonModel) => {
-                return <Button key={buttonModel.id} model={buttonModel} />
-              })
-            }
-          </div>
+            <Buttons key={alignment} className={direction + " " + alignmentClass} buttonModels={buttonModels} />
           );
         })
       }
     </div>
-    );
+  );
 }
 
 

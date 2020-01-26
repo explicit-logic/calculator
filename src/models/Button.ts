@@ -15,11 +15,11 @@ export class Button {
   private _label: string;
   private _operation: OperationType;
 
-  static counter = 1;
+  static _counter: number = 1;
 
   constructor() {
-    this._id = 'btn_' + Button.counter
-    Button.counter++;
+    this._id = 'btn_' + Button._counter;
+    Button._counter++;
   }
 
   get id(): string {

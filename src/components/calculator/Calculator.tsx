@@ -1,39 +1,33 @@
 import * as React from "react";
 
-import {Panel} from './../Panel';
-import {Scene} from './../Scene';
+import { ExpressionHandler } from '../expression/ExpressionHandler';
+import { BaseBlock } from '../../models/blocks/BaseBlock';
 
-import {Position} from './../../models/Position';
+import { Panel } from './../Panel';
+import { Scene } from './../Scene';
 
-import {ButtonsFactory} from '../buttons/ButtonsFactory';
+import { Position } from './../../models/Position';
 
-export class Calculator extends React.Component {
+import { ButtonsFactory } from '../buttons/ButtonsFactory';
 
-  buttonsFactory: ButtonsFactory;
+export const Calculator: React.FC = () => {
+  const buttonsFactory = new ButtonsFactory;
+  buttonsFactory.init();
 
-  constructor(props) {
-    super(props);
+  const [expression, setExpression] = React.useState<BaseBlock[]>([]);
 
-    let buttonsFactory = new ButtonsFactory;
-    buttonsFactory.init();
-
-    this.buttonsFactory = buttonsFactory;
-  }
-
-  render() {
-      return (
-      <div className="wrapper">
+  return (
+    <div className="wrapper">
       {
         Object
           .keys(Position)
           .map(key => (<Panel
             key={key}
             position={Position[key]}
-            alignmentButtons={this.buttonsFactory.getButtonsByPosition(Position[key])}
-            />))
+            alignmentButtons={buttonsFactory.getButtonsByPosition(Position[key])}
+          />))
       }
-      <Scene />
-      </div>
-      );
-  }
+      <Scene expression={expression} />
+    </div>
+  );
 }

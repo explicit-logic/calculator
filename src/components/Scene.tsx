@@ -1,15 +1,16 @@
 import * as React from "react";
 
-import {Expression} from './Expression';
-import {Result} from './Result';
+import { BaseBlock } from '../models/blocks/BaseBlock';
+import { Expression } from './expression/Expression';
+import { Result } from './Result';
 
-export class Scene extends React.Component {
-  render() {
-    return (
+export interface SceneProps { expression: BaseBlock[] };
+
+export const Scene = (props: SceneProps) => {
+  return (
     <div className="expression-scene">
-      <Expression />
+      <Expression expression={props.expression} />
       <Result />
     </div>
-    );
-  }
+  );
 }
