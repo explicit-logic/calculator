@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 
 import { Button } from '../Button';
 import { Button as ButtonModel } from '../../models/Button';
@@ -6,17 +6,15 @@ import { Button as ButtonModel } from '../../models/Button';
 export interface ButtonsProps {
   className: string;
   buttonModels: ButtonModel[];
-};
+}
 
-export const Buttons = (props: ButtonsProps) => {
-
+export const Buttons: React.FunctionComponent<ButtonsProps> = (props: ButtonsProps) => {
+  const { className, buttonModels } = props;
   return (
-    <div className={props.className}>
+    <div className={className}>
       {
-        props.buttonModels.map((buttonModel) => {
-          return <Button key={buttonModel.id} model={buttonModel} />
-        })
+        buttonModels.map((buttonModel) => (<Button key={buttonModel.id} model={buttonModel} />))
       }
     </div>
   );
-}
+};

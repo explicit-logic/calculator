@@ -1,10 +1,13 @@
-import * as React from "react";
-import { BaseBlock as BlockModel } from '../models/blocks/BaseBlock';
+import * as React from 'react';
+import BlockModel from '../models/blocks/BaseBlock';
 
-export interface BlockProps { model: BlockModel };
+export interface BlockProps { model: BlockModel }
 
-export const Block = (props: BlockProps) =>(
-  <span id={props.model.id} className={props.model.className()}>
-  {props.model.formattedValue()}
-  </span>
+export const Block: React.FunctionComponent<BlockProps> = (props: BlockProps) => {
+  const { model } = props;
+  return (
+    <span id={model.id} className={model.className()}>
+      {model.formattedValue()}
+    </span>
   );
+};

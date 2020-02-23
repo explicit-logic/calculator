@@ -1,0 +1,2 @@
+# Ignore js files. Temporary solution for ignore webpack configs
+# **/*.js

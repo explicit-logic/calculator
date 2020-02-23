@@ -1,7 +1,8 @@
-import { BaseBlock } from '../../models/blocks';
+import BaseBlock from '../../models/blocks/BaseBlock';
 
-export class ExpressionHandler {
+export default class ExpressionHandler {
   private _expression: BaseBlock[];
+
   private _setExpression: (expression: BaseBlock[]) => void;
 
   constructor(expression: BaseBlock[], setExpression: (expression: BaseBlock[]) => void) {
@@ -9,8 +10,12 @@ export class ExpressionHandler {
     this._setExpression = setExpression;
   }
 
+  get expression(): BaseBlock[] {
+    return this._expression;
+  }
+
   formattedExpression(): string[] {
-    let formattedExpression: string[] = [];
+    const formattedExpression: string[] = [];
 
     for (const block of this._expression) {
       formattedExpression.push(block.formattedValue());
@@ -18,7 +23,7 @@ export class ExpressionHandler {
     return formattedExpression;
   }
 
-  addBlock(block: BaseBlock) {
+  addBlock(block: BaseBlock): void {
     this._setExpression([...this._expression, block]);
   }
 }

@@ -1,8 +1,8 @@
-import { BaseBlock } from './BaseBlock';
+import BaseBlock from './BaseBlock';
 import { addCommas } from '../../common/utils';
 
-export class NumberBlock extends BaseBlock {
-
+export default class NumberBlock extends BaseBlock {
+  // eslint-disable-next-line class-methods-use-this
   className(): string {
     return 'number';
   }
@@ -10,5 +10,4 @@ export class NumberBlock extends BaseBlock {
   formattedValue(): string {
     return addCommas(this._value);
   }
-
 }

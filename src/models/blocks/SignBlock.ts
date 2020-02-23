@@ -1,9 +1,8 @@
-import { BaseBlock } from './BaseBlock';
+import BaseBlock from './BaseBlock';
 
-export class SignBlock extends BaseBlock {
-
+export default class SignBlock extends BaseBlock {
+  // eslint-disable-next-line class-methods-use-this
   className(): string {
     return 'sign';
   }
-
- }
+}

@@ -1,13 +1,14 @@
 
-export class BaseBlock {
+export default class BaseBlock {
+  static _counter = 0;
 
-  static _counter: number = 0;
   private _id: string;
+
   protected _value: string;
 
   constructor(value: string) {
-    this._id = 'blk_' + BaseBlock._counter;
-    BaseBlock._counter++;
+    this._id = `blk_${BaseBlock._counter}`;
+    BaseBlock._counter += 1;
 
     this._value = value;
   }
@@ -20,6 +21,7 @@ export class BaseBlock {
     return this.constructor.name;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   className(): string {
     return 'block';
   }
@@ -27,5 +29,4 @@ export class BaseBlock {
   formattedValue(): string {
     return this._value;
   }
-
 }

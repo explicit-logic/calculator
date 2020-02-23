@@ -1,18 +1,17 @@
-import * as React from "react";
+import * as React from 'react';
 
 import { Block } from '../Block';
-import { BaseBlock as BlockModel } from '../../models/blocks/BaseBlock';
+import BlockModel from '../../models/blocks/BaseBlock';
 
-export interface ExpressionProps { expression: BlockModel[] };
+export interface ExpressionProps { expression: BlockModel[] }
 
-export const Expression = (props: ExpressionProps) => {
+export const Expression: React.FunctionComponent<ExpressionProps> = (props: ExpressionProps) => {
+  const { expression } = props;
   return (
     <div className="wrapper expression">
       {
-        props.expression.map(blockModel => {
-          return (<Block key={blockModel.id} model={blockModel}/>);
-        })
+        expression.map((blockModel) => (<Block key={blockModel.id} model={blockModel} />))
       }
     </div>
   );
-}
+};

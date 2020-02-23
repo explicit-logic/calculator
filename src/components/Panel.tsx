@@ -1,10 +1,10 @@
-import * as React from "react";
+import * as React from 'react';
 
 import { Button as ButtonModel } from '../models/Button';
 import { Buttons } from './buttons';
-import { Direction } from './../models/Direction';
+import Direction from '../models/Direction';
 
-import { Position } from './../models/Position';
+import Position from '../models/Position';
 
 export interface PanelProps {
   position: Position;
@@ -18,18 +18,18 @@ const PositionDirection = new Map<Position, Direction>([
   [Position.Bottom, Direction.Horizontal],
 ]);
 
-export const Panel = (props: PanelProps) => {
-  const alignmentButtons = props.alignmentButtons;
-  const direction = PositionDirection.get(props.position);
+export const Panel: React.FunctionComponent<PanelProps> = (props: PanelProps) => {
+  const { alignmentButtons, position } = props;
+  const direction = PositionDirection.get(position);
 
-  let alignmentKeys = alignmentButtons ? Object.keys(alignmentButtons) : [];
+  const alignmentKeys = alignmentButtons ? Object.keys(alignmentButtons) : [];
   const alignmentCount = alignmentKeys.length;
 
   return (
-    <div className={`tools ${props.position}-panel`}>
+    <div className={`tools ${position}-panel`}>
       {
-        alignmentKeys.map(alignment => {
-          let alignmentClass: string = 'buttons';
+        alignmentKeys.map((alignment) => {
+          let alignmentClass = 'buttons';
           const buttonModels = alignmentButtons[alignment];
 
           if (alignmentCount > 1) {
@@ -37,12 +37,10 @@ export const Panel = (props: PanelProps) => {
           }
 
           return (
-            <Buttons key={alignment} className={direction + " " + alignmentClass} buttonModels={buttonModels} />
+            <Buttons key={alignment} className={`${direction} ${alignmentClass}`} buttonModels={buttonModels} />
           );
         })
       }
     </div>
   );
-}
-
-
+};

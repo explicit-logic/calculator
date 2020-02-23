@@ -3,31 +3,36 @@
     "operations": ["+", "-", "*", "/", "^"],
     "position": "left",
     "action": "addSign",
-    "keys" : [[107,2992],[109,189],[896,106],[111,191],864]
+    "keys": [[107, 2992], [109, 189], [896, 106], [111, 191], 864]
   },
   {
     "operations": ["(", ")"],
     "position": "left",
-    "actions": ["openBracket", "closeBracket"],
-    "keys" : [912,768]
+    "actions": ["openBracket77", "closeBracket"],
+    "keys": [912, 768]
   },
-  {
-    "operation": 0,
-    "position": "top",
-    "action": "addDigit",
-    "key" : [48,96]
-  },
+  { "operation": 0, "position": "top", "action": "addDigit", "key": [48, 96] },
   {
     "operation": ".",
     "position": "top",
     "action": "addDot",
-    "key" : [190,110]
+    "key": [190, 110]
   },
   {
-    "operations": [1,2,3,4,5,6,7,8,9],
+    "operations": [1, 2, 3, 4, 5, 6, 7, 8, 9],
     "position": "top",
     "action": "addDigit",
-    "keys" : [[49,97],[50,98],[51,99],[52,100],[53,101],[54,102],[55,103],[56,104],[57,105]]
+    "keys": [
+      [49, 97],
+      [50, 98],
+      [51, 99],
+      [52, 100],
+      [53, 101],
+      [54, 102],
+      [55, 103],
+      [56, 104],
+      [57, 105]
+    ]
   },
   {
     "labels": ["C", "←"],
@@ -35,13 +40,13 @@
     "position": ["bottom", "left"],
     "actions": ["clear", "backspace"],
     "classNames": ["button rect magenta large", "button rect gray"],
-    "keys" : [27,8]
+    "keys": [27, 8]
   },
   {
     "operation": "=",
     "position": ["bottom", "right"],
     "className": "button rect blue medium",
     "action": "result",
-    "key" : [13,187]
+    "key": [13, 187]
   }
 ]

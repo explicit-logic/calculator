@@ -1,16 +1,21 @@
-import * as React from "react";
-
-import {Button as ButtonModel} from '../models/Button';
+import * as React from 'react';
+import { Button as ButtonModel } from '../models/Button';
 
 export interface ButtonProps {
   model: ButtonModel;
-};
-
-export const Button = (props: ButtonProps) => {
-
-  return (<a
-    href="#"
-    className={props.model.className || 'button round gray'}
-    onClick={()=>{alert('clk')}}
-  >{props.model.label}</a>);
 }
+
+export const Button: React.FunctionComponent<ButtonProps> = (props: ButtonProps) => {
+  const { model } = props;
+  return (
+    <button
+      type="button"
+      className={model.className || 'button round gray'}
+      onClick={(): void => {
+        model.doAction();
+      }}
+    >
+      {model.label}
+    </button>
+  );
+};

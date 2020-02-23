@@ -1,7 +1,7 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 
-import {Calculator} from './components/calculator';
+import Calculator from './components/calculator/Calculator';
 
 import './index.scss';
 
@@ -17,5 +17,5 @@ import './index.scss';
 
 ReactDOM.render(
   <Calculator />,
-  document.getElementById("main")
+  document.getElementById('main'),
 );
