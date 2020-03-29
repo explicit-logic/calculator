@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable class-methods-use-this */
-import ExpressionHandler from '../expression/ExpressionHandler';
-import ResultHandler from '../result/ResultHandler';
+import ExpressionHandler from '../components/expression/ExpressionHandler';
+import { ResultHandler } from '../handlers/ResultHandler';
 
-export default class CalculatorAction {
+export default class CalculatorService {
   private expressionHandler: ExpressionHandler;
 
   private resultHandler: ResultHandler;
@@ -24,6 +24,10 @@ export default class CalculatorAction {
   backspace() {}
 
   clear() {}
+
+  closeBracket() {}
+
+  openBracket() {}
 
   result() {}
 

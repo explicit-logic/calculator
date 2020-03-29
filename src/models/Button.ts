@@ -1,4 +1,4 @@
-import CalculatorAction from '../components/calculator/CalculatorAction';
+import CalculatorAction from '../services/CalculatorService';
 
 import Alignment from './Alignment';
 import Direction from './Direction';

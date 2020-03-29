@@ -1,17 +1,17 @@
-import * as config from './buttonsConfig.json';
+import config from '../config/buttons.json';
+import { hasOwnProperty } from '../common/utils';
 
-import Alignment from '../../models/Alignment';
-import { ButtonConfigItem, SingularAttribute, PluralAttribute } from '../../models/ButtonConfigItem';
-import CalculatorAction from '../calculator/CalculatorAction';
+import Alignment from '../models/Alignment';
+import { SingularAttribute, PluralAttribute } from '../models/ButtonConstituents';
 
-import Position from '../../models/Position';
+import Position from '../models/Position';
 
 import {
   ActionType,
   Button,
   OperationType,
   KeyType,
-} from '../../models/Button';
+} from '../models/Button';
 
 const ConfigItemAttributes = new Map<SingularAttribute, PluralAttribute>([
   [SingularAttribute.Operation, PluralAttribute.Operations],
@@ -47,15 +47,10 @@ interface OptionalPluralConfigItem {
 type ConfigItem = OptionalSingularConfigItem & OptionalPluralConfigItem &
   (RequiredSingularConfigItem | RequiredPluralConfigItem);
 
-type PluralConfigItem = RequiredPluralConfigItem & OptionalPluralConfigItem;
-
 export default class ButtonsFactory {
-  calculatorAction: CalculatorAction;
-
   buttonsTree: { [key: string]: {[key: string]: Button[]} };
 
-  constructor(calculatorAction: CalculatorAction) {
-    this.calculatorAction = calculatorAction;
+  constructor() {
     this.buttonsTree = {};
   }
 
@@ -63,11 +58,11 @@ export default class ButtonsFactory {
     button: Button,
     position: Position = Position.Top,
   ): void {
-    if (!Object.prototype.hasOwnProperty.call(this.buttonsTree, position)) {
+    if (!hasOwnProperty(this.buttonsTree, position)) {
       this.buttonsTree[position] = {};
     }
 
-    if (!Object.prototype.hasOwnProperty.call(this.buttonsTree[position], button.alignment)) {
+    if (!hasOwnProperty(this.buttonsTree[position], button.alignment)) {
       this.buttonsTree[position][button.alignment] = [];
     }
 
@@ -87,13 +82,10 @@ export default class ButtonsFactory {
     let alignment: Alignment = Alignment.Left;
     let position: Position = Position.Top;
     let buttonsCount = 0;
-    //  let itemValues: { [key: string]: OperationType[] | Action[] | KeyType[] } = {};
 
-    const buttonConfigItem = new ButtonConfigItem();
+    const itemValues: object = {};
 
-    let itemValues: PluralConfigItem;
-
-    if (Object.prototype.hasOwnProperty.call(item, SingularAttribute.Position)) {
+    if (hasOwnProperty(item, SingularAttribute.Position)) {
       positionValue = item[SingularAttribute.Position];
 
       if (Array.isArray(positionValue)) {
@@ -107,35 +99,22 @@ export default class ButtonsFactory {
       }
     }
 
-
-    for (const [, pluralAttribute] of ConfigItemAttributes.entries()) {
-      buttonConfigItem[pluralAttribute] = item[pluralAttribute];
-    }
-
-    // ConfigItemAttributes.forEach((singularAttribute, pluralAttribute) => {
-    //   console.log(singularAttribute, pluralAttribute);
-    //   buttonConfigItem.setProperty(singularAttribute, item[singularAttribute]);
-    // });
-
-    console.log(buttonConfigItem);
-    return;
-
     for (const [singularAttribute, pluralAttribute] of ConfigItemAttributes.entries()) {
-      if (item.hasOwnProperty(singularAttribute)) {
-        const pa = ConfigItemAttributes.get(singularAttribute);
+      if (hasOwnProperty(item, singularAttribute)) {
         itemValues[pluralAttribute] = [item[singularAttribute]];
-      } else if (item.hasOwnProperty(pluralAttribute)) {
+      } else if (hasOwnProperty(item, pluralAttribute)) {
         itemValues[pluralAttribute] = item[pluralAttribute];
       } else {
         itemValues[pluralAttribute] = [];
       }
     }
 
-    if (!(buttonsCount = itemValues[PluralAttribute.Operations].length)) {
+    buttonsCount = itemValues[PluralAttribute.Operations].length;
+    if (!buttonsCount) {
       throw new Error('Operations not found');
     }
 
-    for (let i = 0; i < buttonsCount; i++) {
+    for (let i = 0; i < buttonsCount; i += 1) {
       const button: Button = new Button();
 
       for (const [singularAttribute, pluralAttribute] of ConfigItemAttributes.entries()) {
@@ -148,9 +127,7 @@ export default class ButtonsFactory {
   }
 
   parseConfig(): void {
-    const defaultConfig: { [key: number]: ConfigItem } = config.default;
-
-    for (const configItem of Object.values(defaultConfig)) {
+    for (const configItem of Object.values<ConfigItem>(config as ConfigItem[])) {
       this.parseConfigItem(configItem);
     }
   }

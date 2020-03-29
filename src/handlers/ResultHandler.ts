@@ -1,6 +1,10 @@
-import { ResultState } from './ResultState';
 
-export default class ResultHandler {
+export interface ResultState {
+  value: number;
+  showResult: boolean;
+}
+
+export class ResultHandler {
   private result: ResultState;
 
   private setResult: (result: ResultState) => void;
@@ -15,7 +19,6 @@ export default class ResultHandler {
   }
 
   set value(value: number) {
-    this.result.value = value;
-    this.setResult(this.result);
+    this.setResult({ ...this.result, value });
   }
 }

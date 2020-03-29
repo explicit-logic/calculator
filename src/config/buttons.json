@@ -8,7 +8,7 @@
   {
     "operations": ["(", ")"],
     "position": "left",
-    "actions": ["openBracket77", "closeBracket"],
+    "actions": ["openBracket", "closeBracket"],
     "keys": [912, 768]
   },
   { "operation": 0, "position": "top", "action": "addDigit", "key": [48, 96] },

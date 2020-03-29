@@ -1,29 +1,23 @@
 import * as React from 'react';
-
-import CalculatorAction from './CalculatorAction';
+// import { ResultHandler, ResultState } from '../../handlers/ResultHandler';
+// import CalculatorService from '../../services/CalculatorService';
 import ExpressionHandler from '../expression/ExpressionHandler';
 import BaseBlock from '../../models/blocks/BaseBlock';
-
-import { ResultState } from '../result/ResultState';
-import ResultHandler from '../result/ResultHandler';
-
 import { Panel } from '../Panel';
 import { Scene } from '../Scene';
 
 import Position from '../../models/Position';
 
-import ButtonsFactory from '../buttons/ButtonsFactory';
+import ButtonConfigSerializer from '../../serializers/ButtonsConfigSerializer';
 
 const Calculator: React.FunctionComponent = () => {
   const expressionHandler = new ExpressionHandler(...React.useState<BaseBlock[]>([]));
-  const resultHandler = new ResultHandler(...React.useState<ResultState>({
-    value: 0,
-    showResult: false,
-  }));
-  const calculatorAction = new CalculatorAction(expressionHandler, resultHandler);
-  const buttonsFactory = new ButtonsFactory(calculatorAction);
-
-  buttonsFactory.init();
+  // const resultHandler = new ResultHandler(...React.useState<ResultState>({
+  //   value: 0,
+  //   showResult: false,
+  // }));
+  // const calculatorService = new CalculatorService(expressionHandler, resultHandler);
+  const buttonCollection = ButtonConfigSerializer.getCollection();
 
   return (
     <div className="wrapper">
@@ -34,7 +28,7 @@ const Calculator: React.FunctionComponent = () => {
             <Panel
               key={key}
               position={Position[key]}
-              alignmentButtons={buttonsFactory.getButtonsByPosition(Position[key])}
+              alignmentButtons={buttonCollection.getByPosition(Position[key])}
             />
           ))
       }

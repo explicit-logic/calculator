@@ -1,0 +1,105 @@
+{
+  "definitions": {
+    "action": {
+      "enum": [
+        "addDigit",
+        "addDot",
+        "addSign",
+        "backspace",
+        "clear",
+        "closeBracket",
+        "openBracket",
+        "result",
+        "output"
+      ]
+    },
+    "alignment": { "enum": [ "left", "center", "right" ] },
+    "operation": {
+      "oneOf": [
+        { "type": "number" },
+        { "type": "string", "minLength": 1 }
+      ]
+    },
+    "position": { "enum": [ "top", "bottom", "left", "right" ] },
+    "key": {
+        "type": "integer",
+        "minimum": 3
+    },
+    "keyWithPossibleAlias": {
+      "oneOf": [
+        { "$ref": "#/definitions/key" },
+        {
+          "type": "array",
+          "items": { "$ref": "#/definitions/key" },
+          "minItems": 1
+        }
+      ]
+    }
+  },
+  "type": "array",
+  "items": {
+    "type": "object",
+    "oneOf": [
+      { "required":
+        [ "operation" ] },
+      { "required":
+        [ "operations" ] }
+    ],
+    "properties": {
+      "operation": {
+        "$ref": "#/definitions/operation"
+      },
+      "operations": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/operation"
+        }
+      },
+      "position": {
+        "oneOf": [
+          { "$ref": "#/definitions/position" },
+          {
+            "type": "array",
+            "items": [
+              { "$ref": "#/definitions/position" },
+              { "$ref": "#/definitions/alignment" }
+            ],
+            "additionalItems": false
+          }
+        ]
+      },
+      "action": { "$ref": "#/definitions/action" },
+      "actions": {
+        "type": "array",
+        "items": { "$ref": "#/definitions/action" },
+        "minItems": 1
+      },
+      "key": {
+        "$ref": "#/definitions/keyWithPossibleAlias"
+      },
+      "keys": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/keyWithPossibleAlias"
+        },
+        "minItems": 1
+      },
+      "label": {"type": "string"},
+      "labels": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1
+      },
+      "className": {"type": "string"},
+      "classNames": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1
+      }
+    }
+  }
+}

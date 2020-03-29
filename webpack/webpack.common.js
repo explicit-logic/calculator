@@ -97,6 +97,18 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.json$/,
+        include: [
+          path.resolve(__dirname, 'src/config'),
+        ],
+        use: [
+          {
+            loader: path.resolve('webpack/json-config-loader.js'),
+            options: {},
+          },
+        ],
+      },
     ],
   },
   resolve: {
@@ -117,7 +129,4 @@ module.exports = {
       hash: true,
     }),
   ],
-  externals: {
-    Config: JSON.stringify({ test: 'bb' }),
-  },
 };

@@ -1,8 +1,8 @@
-declare module "*.svg" {
+declare module '*.svg' {
   const fileName: string;
   export default fileName;
 }
-declare module "*.json" {
+declare module '*.json' {
   const value: any;
   export default value;
 }

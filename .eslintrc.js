@@ -9,7 +9,7 @@ module.exports =  {
     'airbnb',
   ],
   parserOptions:  {
-    ecmaVersion:  2018,  // Allows for the parsing of modern ECMAScript features
+    ecmaVersion:  2020,  // Allows for the parsing of modern ECMAScript features
     sourceType:  'module',  // Allows for the use of imports
     ecmaFeatures:  {
       jsx:  true,  // Allows for the parsing of JSX
@@ -19,7 +19,9 @@ module.exports =  {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     // e.g. '@typescript-eslint/explicit-function-return-type': 'off',
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
-    "no-underscore-dangle": "warn",
+    "no-underscore-dangle": "off",
+    "semi": "off",
+    "@typescript-eslint/semi": ["error"],
     'no-restricted-syntax': [
       'error',
       {
