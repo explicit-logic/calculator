@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --open --config ./webpack/webpack.dev.js",
+    "start": "webpack-dev-server --open --config ./webpack/webpack.dev.js",
     "build": "webpack --config ./webpack/webpack.prod.js",
     "lint:r": "eslint --ext .ts,.tsx",
     "lint:r:fix": "npm run lint:r -- --fix"

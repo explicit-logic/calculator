@@ -1,21 +1,21 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable class-methods-use-this */
-import ExpressionHandler from '../components/expression/ExpressionHandler';
+import ExpressionHandler from '../handlers/ExpressionHandler';
 import { ResultHandler } from '../handlers/ResultHandler';
 
-export default class CalculatorService {
-  private expressionHandler: ExpressionHandler;
+export default class ActionHandler {
+  #expressionHandler: ExpressionHandler;
 
-  private resultHandler: ResultHandler;
+  #resultHandler: ResultHandler;
 
   constructor(expressionHandler: ExpressionHandler, resultHandler: ResultHandler) {
-    this.expressionHandler = expressionHandler;
-    this.resultHandler = resultHandler;
+    this.#expressionHandler = expressionHandler;
+    this.#resultHandler = resultHandler;
   }
 
   // eslint-disable-next-line no-unused-vars
-  addDigit(digit: number) {}
+  addDigit(digit: string | number) {}
 
   addDot() {}
 

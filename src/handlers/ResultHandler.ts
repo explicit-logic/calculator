@@ -5,20 +5,13 @@ export interface ResultState {
 }
 
 export class ResultHandler {
-  private result: ResultState;
+  #result: ResultState;
 
-  private setResult: (result: ResultState) => void;
-
-  constructor(result: ResultState, setResult: (result: ResultState) => void) {
-    this.result = result;
-    this.setResult = setResult;
+  constructor(result: ResultState) {
+    this.#result = result;
   }
 
   get value(): number {
-    return this.result.value;
-  }
-
-  set value(value: number) {
-    this.setResult({ ...this.result, value });
+    return this.#result.value;
   }
 }

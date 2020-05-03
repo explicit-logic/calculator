@@ -90,8 +90,4 @@ export class Button {
   set operation(operation: OperationType) {
     this._operation = operation;
   }
-
-  doAction(): void {
-    alert(this._action);
-  }
 }

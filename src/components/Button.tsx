@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Button as ButtonModel } from '../models/Button';
+import { useCalculator } from './context/CalculatorContext';
 
 export interface ButtonProps {
   model: ButtonModel;
@@ -7,12 +8,14 @@ export interface ButtonProps {
 
 export const Button: React.FunctionComponent<ButtonProps> = (props: ButtonProps) => {
   const { model } = props;
+  const { dispatch, calculatorService } = useCalculator();
+
   return (
     <button
       type="button"
       className={model.className || 'button round gray'}
       onClick={(): void => {
-        model.doAction();
+        dispatch(calculatorService[model.action](model.operation));
       }}
     >
       {model.label}
