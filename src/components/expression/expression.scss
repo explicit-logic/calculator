@@ -1,0 +1,25 @@
+
+.expression-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 650px;
+  height: 300px;
+  margin: -150px 0 0 -325px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.expression {
+  position: absolute;
+  top: 50%;
+  left: 0px;
+  width: 650px;
+  font-family: Verdana;
+  font-size: 40px;
+  color:#333;
+  text-align: center;
+  transform: translateY(-50%);
+}
+
+@import "block/block";

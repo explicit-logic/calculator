@@ -1,0 +1,20 @@
+.expression__block {
+  display: inline-block;
+  border-radius: 5px;
+  margin: 1px;
+  vertical-align: middle;
+  padding: 3px;
+  height: 53px;
+  line-height: 49px;
+}
+
+.expression__block:hover {
+  background-color: #333;
+  color:#fff;
+  cursor: pointer;
+}
+
+.expression__block .expression__block--sign:hover {
+  /*border-radius: 50%;*/
+  background-color: #1AB0EC;
+}

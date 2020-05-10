@@ -1,9 +1,9 @@
-import CalculatorAction from '../services/CalculatorService';
+import ActionHandler from '../handlers/ActionHandler';
 
 import Alignment from './Alignment';
 import Direction from './Direction';
 
-export type ActionType = keyof CalculatorAction;
+export type ActionType = keyof ActionHandler;
 export type OperationType = string | number;
 export type KeyType = number | number[];
 

@@ -17,10 +17,6 @@ a:focus {
 	width:800px;
 	height:600px;
 }
-.wrapper-scene{
-	width: 100%;
-	height: 100%;
-}
 .tools.top-panel{
 	position: absolute;
 	left:0px;
@@ -56,91 +52,7 @@ a:focus {
     height: 60px;
     padding: 0px 60px;
 }
-.expression-scene{
-	position: absolute;
-	top:65px;
-	left:65px;
-	display: block;
-	background-color: '#f00';
-	border:solid #ddd 2px;
-  	border-radius: 10px;
-  	height: 467px;
-    width: 667px;
-}
-.wrapper.expression{
-	position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 650px;
-    height: 300px;
-    margin: -150px 0 0 -325px;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-#expression{
-	position: absolute;
-  	top: 50%;
-  	left: 0px;
-  	width: 650px;
-  	font-family: Verdana;
-    font-size: 40px;
-    color:#333;
-    text-align: center;
-  	transform: translateY(-50%);
-}
-#expression span{
-	display: inline-block;
-    border-radius: 5px;
-    margin: 1px;
-    vertical-align: middle;
-    padding: 3px;
-    height: 53px;
-    line-height: 49px;
-}
-#expression span:hover{
-	background-color: #333;
-	color:#fff;
-    cursor: pointer;
-}
-#expression .sign:hover{
-	/*border-radius: 50%;*/
-	background-color: #1AB0EC;
-}
-#result{
-	position: absolute;
-    bottom: 25px;
-    left: 30%;
-    width: 65%;
-    height: 35px;
-    font-family: Verdana;
-    font-size: 30px;
-    color: #333;
-    border-top: #2db0e4 1px solid;
-    text-align: center;
-    padding-top: 10px;
-    padding-left: 25px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-#result:before{
-	content:'=';
-	position: absolute;
-    left: 0px;
-    top:20%;
-}
-#result.compute:before{
-  content:url('/imgs/ajax-loader.gif');
-  position: absolute;
-    left: 0px;
-    top:6px;
-}
-#result.error{
-	font-family: Verdana;
-    font-size: 14px;
-    color: #E91E63;
-    border-top: #ddd 1px solid;
-    text-align:left;
-}
+
 .vertical.buttons{
 	position: absolute;
 	top:50%;

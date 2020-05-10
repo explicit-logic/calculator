@@ -5,7 +5,7 @@ import * as React from 'react';
 import { CalculatorContextProvider } from '../context/CalculatorContext';
 // import BaseBlock from '../../models/blocks/BaseBlock';
 import { Panel } from '../Panel';
-import Scene from '../Scene';
+import Scene from '../scene/Scene';
 
 import Position from '../../models/Position';
 

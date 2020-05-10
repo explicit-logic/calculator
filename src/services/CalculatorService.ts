@@ -1,35 +1,16 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable class-methods-use-this */
-import ExpressionHandler from '../handlers/ExpressionHandler';
-import { ResultHandler } from '../handlers/ResultHandler';
+import ActionHandler from '../handlers/ActionHandler';
+import { OperationType } from '../models/Button';
+import { calculatorType } from '../reducers/calculator';
 
-export default class ActionHandler {
-  #expressionHandler: ExpressionHandler;
+export default class CalculatorService {
+  #actionHandler: ActionHandler;
 
-  #resultHandler: ResultHandler;
-
-  constructor(expressionHandler: ExpressionHandler, resultHandler: ResultHandler) {
-    this.#expressionHandler = expressionHandler;
-    this.#resultHandler = resultHandler;
+  constructor(state: calculatorType) {
+    this.#actionHandler = new ActionHandler(state);
   }
 
-  // eslint-disable-next-line no-unused-vars
-  addDigit(digit: string | number) {}
-
-  addDot() {}
-
-  addSign() {}
-
-  backspace() {}
-
-  clear() {}
-
-  closeBracket() {}
-
-  openBracket() {}
-
-  result() {}
-
-  output() {}
+  runAction(action: keyof ActionHandler, operation: OperationType) {
+    return this.#actionHandler[action](operation);
+  }
 }

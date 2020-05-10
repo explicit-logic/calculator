@@ -2,19 +2,27 @@
 export default class BaseBlock {
   static _counter = 0;
 
-  private _id: string;
+  #id: number;
 
-  protected _value: string;
+  #value: string;
 
   constructor(value: string) {
-    this._id = `blk_${BaseBlock._counter}`;
+    this.#id = BaseBlock._counter;
     BaseBlock._counter += 1;
 
-    this._value = value;
+    this.#value = value;
   }
 
-  get id(): string {
-    return this._id;
+  get id(): number {
+    return this.#id;
+  }
+
+  get value(): string {
+    return this.#value;
+  }
+
+  set value(value: string) {
+    this.#value = value;
   }
 
   get blockName(): string {
@@ -22,11 +30,27 @@ export default class BaseBlock {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  className(): string {
+  getClassName(): string {
     return 'block';
   }
 
   formattedValue(): string {
-    return this._value;
+    return this.#value;
+  }
+
+  hasMethod(method: string): boolean {
+    return (method in this);
+  }
+
+  runMethod(method: string, operation: string | number) {
+    this[method](operation);
+  }
+
+  isLastCharEqualTo(char: string) {
+    return (this.#value.slice(-1) === char);
+  }
+
+  removeLastChar() {
+    this.#value = this.#value.slice(0, -1);
   }
 }

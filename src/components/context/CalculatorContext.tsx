@@ -1,8 +1,6 @@
 import React, { createContext, useContext, useReducer } from 'react';
 import { calculatorType, calculatorState, calculatorReducer } from '../../reducers/calculator';
 import CalculatorService from '../../services/CalculatorService';
-import ExpressionHandler from '../../handlers/ExpressionHandler';
-import { ResultHandler } from '../../handlers/ResultHandler';
 
 export interface CalculatorContextProps {
   children: React.ReactNode;
@@ -18,19 +16,29 @@ export const CalculatorContext = createContext<{
   calculatorService: null,
 });
 
-// export const CalculatorContext = createContext({});
+const calculatorDispatch = (
+  dispatch: React.Dispatch<any>,
+) => (action: any) => (
+  Array.isArray(action)
+    ? action.filter(Boolean).map(dispatch)
+    : dispatch(action)
+);
+
+const useCalculatorService = (state: calculatorType) => (new CalculatorService(state));
 
 export const CalculatorContextProvider: React.FunctionComponent<CalculatorContextProps> = (
   { children }: CalculatorContextProps,
 ) => {
   const [state, dispatch] = useReducer(calculatorReducer, calculatorState);
 
-  const expressionHandler = new ExpressionHandler(state.expression);
-  const resultHandler = new ResultHandler(state.result);
-  const calculatorService = new CalculatorService(expressionHandler, resultHandler);
-
   return (
-    <CalculatorContext.Provider value={{ state, dispatch, calculatorService }}>
+    <CalculatorContext.Provider
+      value={{
+        state,
+        dispatch: calculatorDispatch(dispatch),
+        calculatorService: useCalculatorService(state),
+      }}
+    >
       {children}
     </CalculatorContext.Provider>
   );

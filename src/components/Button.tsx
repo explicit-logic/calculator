@@ -15,7 +15,7 @@ export const Button: React.FunctionComponent<ButtonProps> = (props: ButtonProps)
       type="button"
       className={model.className || 'button round gray'}
       onClick={(): void => {
-        dispatch(calculatorService[model.action](model.operation));
+        dispatch(calculatorService.runAction(model.action, model.operation));
       }}
     >
       {model.label}
